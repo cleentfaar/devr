@@ -40,7 +40,7 @@ to access all the commands at your fingertips.
 Before anything, keep in mind that you will have to run your CMD with Administrator rights (right-click, Run as Administrator)
 
 To be able to access DEVR from anywhere in your filestructure, download the package, add it to a directory of your choice,
-and then add that directory's path to your 'path' environment variable. If you are unfamiliar witch changing this variable,
+and then add that directory's path to your 'path' environment variable. If you are unfamiliar with changing this variable,
 see [this tutorial](http://www.computerhope.com/issues/ch000549.htm#0).
 
 After changing the variable, don't forget to close and re-open your CMD if it was still open before, since the variable
