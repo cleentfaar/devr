@@ -43,6 +43,7 @@ to access all the commands at your fingertips.
 
 ###Windows users###
 Before anything, keep in mind that you will have to run your CMD with Administrator rights (right-click, Run as Administrator)
+
 To be able to access DEVR from anywhere in your filestructure, download the package, add it to a directory of your choice,
 and then add that directory's path to your 'path' environment variable. If you are unfamiliar witch changing this variable,
 see this tutorial.
