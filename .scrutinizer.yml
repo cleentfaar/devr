@@ -1,16 +1,12 @@
 filter:
     paths:
         - 'src/*'
-    excluded_paths:
-        - '*/Test/*'
-        - '*/translations/*'
 before_commands:
     - 'cp app/config/parameters.yml.dist app/config/parameters.yml'
     - 'composer install'
 tools:
-    php_code_coverage:
-        test_command: 'phpunit -c app/phpunit.xml.dist'
     php_mess_detector: true
+    external_code_coverage: true
     php_code_sniffer:
         config:
             standard: PSR1
