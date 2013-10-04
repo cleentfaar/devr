@@ -1,14 +1,9 @@
 DEVR - Installation
 ========================================================================================================================
 
-1. Composer
-------------------------------------------------------------------------------------------------------------------------
-The dependencies for the script will have to be installed first.
-
-2. Command-line execution
-------------------------------------------------------------------------------------------------------------------------
 To be able to access DEVR from anywhere in your filesystem, you must add it to your so-called PATH environment variable.
 Follow the instructions below for your own operating system:
+
 
 ###Linux users###
 
@@ -56,8 +51,4 @@ So, start up your CMD again, and you should be able to run the following command
 ``c:\Users\Cas>devgen``
 
 
-3. Configuration
-------------------------------------------------------------------------------------------------------------------------
-Configuration for all commands are done through a local sqlite database, which will be created for you automatically.
-You can make changes to the configuration by using the appropriate ``config`` command, e.g. ``config:set mykey myvalue``
-
+Next, you can configure DEVGEN further using the related commands, for this, see [the Commands doc](3-Commands.md)
