@@ -14,27 +14,27 @@ Follow the instructions below for your own operating system:
 
 You can add the DEVR directory to your path with the following command, replacing the example path given
 
-    ``~$ export PATH=$PATH:/path/to/devr``
+``~$ export PATH=$PATH:/path/to/devr``
 
 A better way would be to edit your .bash_profile file to include the above command. That way, it would be done
 automatically every time you log in. Most modern Linux distributions encourage a practice in which each user has a
 specific directory for the programs he/she personally uses. This directory is called 'bin' and is a subdirectory of
 your home directory. If you do not already have one, create it with the following command (while in your home dir):
 
-    ``~$ mkdir bin``
+``~$ mkdir bin``
 
 Now download the DEVR package and place the extracted directory 'devr' into your new bin directory.
 The dependencies for DEVR will have to be installed before running it. For this, Composer is used, so first make sure
 you have it installed globally or download it from http://getcomposer.org/composer.phar and place it in the directory
 used below:
 
-    ``~$ cd /path/to/my/bin/devgen``
-    ``~$ composer install``
+``~$ cd /path/to/my/bin/devgen``
+``~$ composer install``
 
 
 Now you are all set, you just have to type:
 
-    ``~$ devr``
+``~$ devr``
 
 to access all the commands at your fingertips.
 
@@ -50,7 +50,7 @@ will not be applied until your CMD has restarted.
 
 So, start up your CMD again, and you should be able to run the following command from anywhere in your filesystem:
 
-    ``c:\Users\Cas>devgen``
+``c:\Users\Cas>devgen``
 
 
 3. Configuration
