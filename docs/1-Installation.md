@@ -51,4 +51,4 @@ So, start up your CMD again, and you should be able to run the following command
 ``c:\Users\Cas>devgen``
 
 
-Next, you can configure DEVGEN further using the related commands, for this, see [the Commands doc](3-Commands.md)
+Next, you can configure DEVGEN further using the related commands, for this, see [the Configuration doc](2-Configuration.md)
