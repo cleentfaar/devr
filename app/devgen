@@ -4,13 +4,13 @@
  * This file is part of the DEVR CLI-script
  *
  * @author Cas Leentfaar
- * @license http://github.com/cleentfaar/devgen
+ * @license http://github.com/cleentfaar/devr
  */
 set_time_limit(0);
 
 require_once(__DIR__ . "/bootstrapper.php");
 
-use Cleentfaar\Devgen\Console\Application;
+use Cleentfaar\Devr\Console\Application;
 
-$application = new Application(new \Cleentfaar\Devgen\Config\Loader\DatabaseLoader());
+$application = new Application(new \Cleentfaar\Devr\Config\Loader\DatabaseLoader());
 $application->run();

@@ -3,7 +3,7 @@
  * This file is part of the DEVR CLI-script
  *
  * @author Cas Leentfaar
- * @license http://github.com/cleentfaar/devgen
+ * @license http://github.com/cleentfaar/devr
  */
 use Composer\Autoload\ClassLoader;
 

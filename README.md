@@ -1,8 +1,8 @@
-[![Build Status](https://travis-ci.org/cleentfaar/devgen.png?branch=master)](http://travis-ci.org/cleentfaar/devgen)
+[![Build Status](https://travis-ci.org/cleentfaar/devr.png?branch=master)](http://travis-ci.org/cleentfaar/devr)
 
-DEVGEN
+DEVR
 ========================================================================================================================
-DEVGEN is my attempt at creating a handy all-in-one CLI-script aimed at developers who have to work on many
+DEVR is my attempt at creating a handy all-in-one CLI-script aimed at developers who have to work on many
 different projects for many different clients.
 You may have a specific folder full of clients and (at a deeper level) their projects, and you want to keep control over
 the structure while not being slowed down in the process.
