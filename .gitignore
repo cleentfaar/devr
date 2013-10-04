@@ -1,0 +1,14 @@
+# DEVR ignores
+app/db/*
+!app/db/.gitkeep
+
+# IDE ignores
+.idea
+.settings
+.project
+.buildpath
+
+# Composer ignores
+vendor/
+composer.phar
+composer.lock

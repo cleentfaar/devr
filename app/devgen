@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+/**
+ * This file is part of the DEVR CLI-script
+ *
+ * @author Cas Leentfaar
+ * @license http://github.com/cleentfaar/devgen
+ */
+set_time_limit(0);
+
+require_once(__DIR__ . "/bootstrapper.php");
+
+use Cleentfaar\Devgen\Console\Application;
+
+$application = new Application(new \Cleentfaar\Devgen\Config\Loader\DatabaseLoader());
+$application->run();

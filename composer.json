@@ -1,0 +1,26 @@
+{
+    "name": "cleentfaar/devr",
+    "type": "library",
+    "description": "All-in-one command-line tool for developers",
+    "keywords": ["devr","cli","command-line","tool"],
+    "homepage": "http://github.com/cleentfaar/devr",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Cas Leentfaar",
+            "email": "leentfaar87@gmail.com",
+            "homepage": "http://github.com/cleentfaar",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+    	"symfony/class-loader": "dev-master",
+        "symfony/console": "dev-master",
+        "symfony/filesystem": "dev-master",
+        "symfony/validator": "dev-master",
+        "kriswallsmith/buzz": "dev-master"
+    },
+    "autoload": {
+        "psr-0": { "": "src/" }
+    }
+}
