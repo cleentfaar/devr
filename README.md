@@ -1,3 +1,5 @@
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/cleentfaar/devr/badges/quality-score.png?s=1340e5541086878e61f74f79b27ddc7962b91e26)](https://scrutinizer-ci.com/g/cleentfaar/devr/)
+[![Code Coverage](https://scrutinizer-ci.com/g/cleentfaar/devr/badges/coverage.png?s=7663356e9caea6f351a1c25d9afd8ed556cb5afe)](https://scrutinizer-ci.com/g/cleentfaar/devr/)
 [![Build Status](https://travis-ci.org/cleentfaar/devr.png?branch=master)](http://travis-ci.org/cleentfaar/devr)
 
 DEVR
