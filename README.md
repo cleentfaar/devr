@@ -15,7 +15,7 @@ Please read [the installation chapter of the documentation](docs/1-Installation.
 
 Configuration
 ------------------------------------------------------------------------------------------------------------------------
-Please read [the commands reference of the documentation](docs/2-Configuration.md)
+Please read [the documentation for configuring DEVR](docs/2-Configuration.md)
 
 
 Usage
