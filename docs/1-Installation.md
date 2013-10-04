@@ -28,8 +28,10 @@ The dependencies for DEVR will have to be installed before running it. For this,
 you have it installed globally or download it from http://getcomposer.org/composer.phar and place it in the directory
 used below:
 
-``~$ cd /path/to/my/bin/devgen``
-``~$ composer install``
+```
+~$ cd /path/to/my/bin/devgen
+~$ composer install
+```
 
 
 Now you are all set, you just have to type:
