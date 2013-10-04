@@ -24,7 +24,7 @@ you have it installed globally or download it from http://getcomposer.org/compos
 used below:
 
 ```
-~$ cd /path/to/my/bin/devgen
+~$ cd /path/to/my/bin/devr
 ~$ composer install
 ```
 
@@ -48,7 +48,7 @@ will not be applied until your CMD has restarted.
 
 So, start up your CMD again, and you should be able to run the following command from anywhere in your filesystem:
 
-``c:\Users\Cas>devgen``
+``c:\Users\Cas>devr``
 
 
-Next, you can configure DEVGEN further using the related commands, for this, see [the Configuration doc](2-Configuration.md)
+Next, you can configure DEVR further using the related commands, for this, see [the Configuration doc](2-Configuration.md)

@@ -50,4 +50,4 @@ Options:
  --no-interaction (-n) Do not ask any interactive question.
  ```
 
-There are also a number of commands related to configuring DEVGEN itself, for this, see [the Configuration doc](2-Configuration.md)
+There are also a number of commands related to configuring DEVR itself, for this, see [the Configuration doc](2-Configuration.md)
