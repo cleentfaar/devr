@@ -50,7 +50,7 @@ will not be applied until your CMD has restarted.
 
 So, start up your CMD again, and you should be able to run the following command from anywhere in your filesystem:
 
-    ``~$ devr``
+    ``c:\Users\Cas>devgen``
 
 
 3. Configuration
