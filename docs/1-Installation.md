@@ -10,7 +10,7 @@ The dependencies for the script will have to be installed first.
 To be able to access DEVR from anywhere in your filesystem, you must add it to your so-called PATH environment variable.
 Follow the instructions below for your own operating system:
 
-#Linux users#
+###Linux users###
 
 You can add the DEVR directory to your path with the following command, replacing the example path given
 
@@ -39,7 +39,7 @@ Now you are all set, you just have to type:
 to access all the commands at your fingertips.
 
 
-#Windows users#
+###Windows users###
 Before anything, keep in mind that you will have to run your CMD with Administrator rights (right-click, Run as Administrator)
 To be able to access DEVR from anywhere in your filestructure, download the package, add it to a directory of your choice,
 and then add that directory's path to your 'path' environment variable. If you are unfamiliar witch changing this variable,
