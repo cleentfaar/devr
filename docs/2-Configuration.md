@@ -1,4 +1,4 @@
-DEVR - Commands reference
+DEVR - Configuration
 ========================================================================================================================
 
 Currently there are only a few commands available and they are all at their very first iteration. Be warned to use
