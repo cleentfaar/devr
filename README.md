@@ -13,9 +13,14 @@ Installation
 Please read [the installation chapter of the documentation](docs/1-Installation.md)
 
 
+Configuration
+------------------------------------------------------------------------------------------------------------------------
+Please read [the commands reference of the documentation](docs/2-Configuration.md)
+
+
 Usage
 ------------------------------------------------------------------------------------------------------------------------
-Please read [the commands reference of the documentation](docs/2-Commands.md)
+Please read [the commands reference of the documentation](docs/3-Commands.md)
 
 
 Future improvements

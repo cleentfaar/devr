@@ -33,7 +33,6 @@ used below:
 ~$ composer install
 ```
 
-
 Now you are all set, you just have to type:
 
 ``~$ devr``
@@ -42,6 +41,7 @@ to access all the commands at your fingertips.
 
 
 ###Windows users###
+
 Before anything, keep in mind that you will have to run your CMD with Administrator rights (right-click, Run as Administrator)
 
 To be able to access DEVR from anywhere in your filestructure, download the package, add it to a directory of your choice,
