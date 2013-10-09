@@ -109,6 +109,12 @@ class ProjectCreateCommand extends Command
         }
         return array($client,$project);
     }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return array|void
+     */
     private function executeInteractively(InputInterface $input, OutputInterface $output)
     {
         $client = $this->getDialog()->ask($output, '<question>Which client would you like to create a project for?:</question> ');
@@ -127,16 +133,6 @@ class ProjectCreateCommand extends Command
 
         return array($client,$project);
 
-    }
-
-    private function getDatabaseConnection($driver, $hostname, $username, $password)
-    {
-        switch ($driver) {
-            case 'pdo_mysql':
-            default:
-                break;
-        }
-        $db = new \PDO($driver);
     }
 
     /**
@@ -196,6 +192,7 @@ class ProjectCreateCommand extends Command
 
     /**
      * Creates a git repository for a given project directory
+     * This uses the git:create command internally
      *
      * @param InputInterface $input
      * @param OutputInterface $output
@@ -304,6 +301,11 @@ class ProjectCreateCommand extends Command
         return $configuration['projects.clients_dir'];
     }
 
+    /**
+     * Returns the default clone directory, being relative to the project's root directory
+     *
+     * @return string
+     */
     private function getDefaultCloneDir()
     {
         $configuration = $this->getApplication()->getConfiguration();
