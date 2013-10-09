@@ -49,14 +49,6 @@ class ComposerInstallCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $interactive = true;
-        if ($input->getOption('no-interaction')) {
-            $interactive = false;
-        }
-    	if ($interactive === true) {
-    		$output->writeln('<error>Currently not needing interactive mode, coming soon!</error>');
-    		return;
-    	}
     	$autoInstall = false;
     	$force = false;
     	if ($input->getOption('auto-install')) {
@@ -66,14 +58,15 @@ class ComposerInstallCommand extends Command
     		$force = true;
     	}
     	if ($force == false && $this->isComposerAvailable()) {
-        	$output->writeln('<comment>The composer.phar has already been downloaded, use --force to overwrite this version</comment>');
+        	$output->writeln('<comment>The composer.phar has already been downloaded to this directory, use --force to overwrite this version</comment>');
+            return 1;
     	} else {
     		$this->downloadComposer($input, $output);
     	}
         if ($autoInstall === true) {
         	$this->installDependencies($input, $output);
         } else {
-        	$output->writeln('<comment>Auto-install was not enabled: you will need to run <error>php composer.phar install</error> manually!</comment>');
+        	$output->writeln('<comment>The auto-install option was not used: you will need to run "php composer.phar install" manually!</comment>');
         }
     	$output->writeln('<comment>Installation finished successfully!</comment>');
     }
@@ -86,8 +79,12 @@ class ComposerInstallCommand extends Command
      */
     private function installDependencies(InputInterface $input, OutputInterface $output, $composerInstalledGlobally = false)
     {
+        if (!$this->composerJsonExists()) {
+            $output->writeln('<comment>There is no composer.json in the working directory, auto-install has no effect</comment>');
+            return false;
+        }
     	$action = 'install';
-    	if ($this->isLockCreated()) {
+    	if ($this->composerLockExists()) {
     		$action = 'update';
     	}
     	if ($composerInstalledGlobally === true) {
@@ -110,7 +107,15 @@ class ComposerInstallCommand extends Command
     /**
      * @return bool
      */
-    private function isLockCreated()
+    private function composerJsonExists()
+    {
+        return file_exists($this->getComposerJsonPath());
+    }
+
+    /**
+     * @return bool
+     */
+    private function composerLockExists()
     {
     	return file_exists($this->getComposerLockPath());
     }
@@ -121,6 +126,14 @@ class ComposerInstallCommand extends Command
     private function isComposerAvailable()
     {
     	return file_exists($this->getComposerPharPath());
+    }
+
+    /**
+     * @return string
+     */
+    private function getComposerJsonPath()
+    {
+        return getcwd() . '/composer.json';
     }
 
     /**
