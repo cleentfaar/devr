@@ -162,18 +162,28 @@ class DatabaseLoader
             $stmt->execute(array('value'=>'DEVR'));
             $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('application.version',:value)");
             $stmt->execute(array('value'=>'1.0a'));
-            if (defined("DEVR_TEST_MODE")) {
-                $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.skeleton_dir', :value)");
-                $stmt->execute(array('value'=>getcwd().'/project_skeleton'));
-                $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.clients_dir',:value)");
-                $stmt->execute(array('value'=>getcwd().'/clients'));
-            }
             $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('environment.hierarchy',:value)");
             $stmt->execute(array('value'=>'clients -> client -> project'));
             $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('composer.download_url',:value)");
             $stmt->execute(array('value'=>'http://getcomposer.org/composer.phar'));
+            if (defined("DEVR_TEST_MODE")) {
+                $this->insertTestConfiguration($connection);
+            }
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param \PDO $connection
+     * @return bool
+     */
+    private function insertTestConfiguration(\PDO $connection)
+    {
+        $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.skeleton_dir', :value)");
+        $stmt->execute(array('value'=>getcwd().'/project_skeleton'));
+        $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.clients_dir',:value)");
+        $stmt->execute(array('value'=>getcwd().'/clients'));
+        return true;
     }
 }

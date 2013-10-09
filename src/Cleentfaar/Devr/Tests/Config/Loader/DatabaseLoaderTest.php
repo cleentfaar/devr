@@ -35,11 +35,13 @@ class DatabaseLoaderTest
         $this->assertEquals('array', gettype($mockDatabaseLoader->getAll()));
     }
 
+    /**
+     * @param array $data
+     */
     public function testSave(array $data)
     {
         $mockDatabaseLoader = $this->mockObject('\Cleentfaar\Devr\Config\Loader\DatabaseLoader');
         $this->assertEquals('bool', gettype($mockDatabaseLoader->save(array('somekey'=>'somevalue'))));
         $this->assertEquals('somevalue', $mockDatabaseLoader->get('somekey'));
-
     }
 }
