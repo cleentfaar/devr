@@ -1,14 +1,12 @@
 DEVR - Configuration
 ========================================================================================================================
 
-Currently there are only a few commands available and they are all at their very first iteration. Be warned to use
-these with care on your filesystem, or use the --dry-run option where available to prevent any file changes whatsoever
+There are special commands available for manipulating the DEVR configuration while it's installed on your system. These
+commands are listed below.
 
-The commands generally can be executed as follows: ``php app/devr command:here``
+The commands generally can be executed as follows: ``devr command:here``
 
-To get help on a certain command, simply execute: ``php app/devr command:here --help``
-
-Currently, the following commands are available to you:
+To get help on a certain command, simply execute: ``devr command:here --help``
 
 
 ### config:list ###
