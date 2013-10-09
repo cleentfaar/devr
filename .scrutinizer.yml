@@ -11,5 +11,6 @@ tools:
         config:
             standard: PSR1
     php_code_coverage:
+        enabled: true
         test_command: phpunit -c app/
     php_pdepend: true

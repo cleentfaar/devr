@@ -62,7 +62,6 @@ class DatabaseLoader
                 $query = "INSERT INTO `configuration` (key, value) VALUES (:key,:value)";
             }
             $stmt = $this->getConnection()->prepare($query);
-            var_dump($params);
             $success = $stmt->execute($params);
             if (!$success) {
                 return false;
