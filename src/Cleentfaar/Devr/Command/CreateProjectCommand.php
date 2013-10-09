@@ -96,7 +96,6 @@ class CreateProjectCommand extends Command
             return;
         }
 
-
         $projectsDirectory = $this->getProjectsDir();
         $output->writeln('');
 
@@ -114,13 +113,11 @@ class CreateProjectCommand extends Command
             $this->createGitRepository($input, $output, $projectDir, $dryRun);
         }
 
-
         $createDatabase = $this->getDialog()->ask($output, '<question>Would you like to create a database for this project?:</question> ');
         $allowedAnswers = array("y", "yes");
         if (in_array($createGit, $allowedAnswers)) {
             $this->createDatabase($input, $output, $projectDir, $dryRun);
         }
-
     }
 
     private function getDatabaseConnection($driver, $hostname, $username, $password)
