@@ -26,14 +26,13 @@ class ProjectCreateCommandTest extends \PHPUnit_Framework_TestCase
         $client = uniqid();
         $project = uniqid();
 
-		$commandTester->execute(
+        $commandTester->execute(
 			array(
 				'client' => $client,
 				'project' => $project,
 				'--no-interaction' => true,
 			)
 		);
-
 		$output = $commandTester->getDisplay();
 
 		$this->assertRegExp('/Created project/', $output);

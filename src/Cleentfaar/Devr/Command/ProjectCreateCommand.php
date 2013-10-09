@@ -83,29 +83,32 @@ class ProjectCreateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $dryRun = false;
-        if ($input->getOption('dry-run')) {
-            $dryRun = true;
-        }
         if ($input->getOption('no-interaction')) {
             list($client, $project) = $this->executeNonInteractively($input, $output);
         } else {
             list($client, $project) = $this->executeInteractively($input, $output);
         }
 
-        $projectDir = $this->createProjectDir($input, $output, $client, $project, $dryRun);
+        $projectDir = $this->createProjectDir($input, $output, $client, $project, $input->getOption('dry-run'));
 
-        $createGit = $this->getDialog()->ask($output, '<question>Would you like to create a git repository for this project?:</question> ');
+        if ($input->getOption('no-interaction')) {
+            $createGit = $input->getOption('create-git') == true ? 'y' : 'n';
+        } else {
+            $createGit = $this->getDialog()->ask($output, '<question>Would you like to create a git repository for this project?:</question> ');
+        }
         $allowedAnswers = array("", "y", "yes");
         if (in_array($createGit, $allowedAnswers)) {
-            $this->createGitRepository($input, $output, $projectDir, $dryRun);
+            $this->createGitRepository($input, $output, $projectDir, $input->getOption('dry-run'));
         }
-
+        /**
+         * @todo coming soon...
+         *
         $createDatabase = $this->getDialog()->ask($output, '<question>Would you like to create a database for this project?:</question> ');
         $allowedAnswers = array("y", "yes");
         if (in_array($createDatabase, $allowedAnswers)) {
-            $this->createDatabase($input, $output, $projectDir, $dryRun);
+            $this->createDatabase($input, $output, $projectDir, $input->getOption('dry-run'));
         }
+        */
     }
 
     /**
@@ -154,29 +157,6 @@ class ProjectCreateCommand extends Command
         $db = new \PDO($driver);
     }
 
-    private function createDatabase(InputInterface $input, OutputInterface $output, $project, $dryRun = true)
-    {
-        $driver = $this->getDialog()->ask($output, '<question>Please select the driver to use for the database connection (default is "pdo_mysql")</question> ');
-        if ($driver == '') {
-            $driver = 'pdo_mysql';
-        }
-
-        $hostname = $this->getDialog()->ask($output, '<question>Please set the hostname to use for the database connection (default is "localhost")</question> ');
-        if ($hostname == '') {
-            $hostname = 'localhost';
-        }
-
-        $user = $this->getDialog()->ask($output, '<question>Please set the username to use for the database connection (default is "root")</question> ');
-        if ($user == '') {
-            $user = 'root';
-        }
-
-        $password = $this->getDialog()->ask($output, '<question>Please set the password to use for the database connection (default is left empty)</question> ');
-
-        $db = $this->getDatabaseConnection($driver, $hostname, $user, $password);
-        $db->execute($query);
-    }
-
     /**
      * Creates a project directory for a given client
      *
@@ -192,10 +172,12 @@ class ProjectCreateCommand extends Command
     {
         $projectsDirectory = $this->getProjectsDir();
         if (!$this->clientDirExists($client)) {
-            $confirm = $this->getDialog()->ask($output, '<question>The client will be added to the following directory: ' . $projectsDirectory . ', proceed?</question> ');
-            $allowedAnswers = array("", "y", "yes");
-            if (!in_array($confirm, $allowedAnswers)) {
-                return $this->cancel('<error>Cancelled, project creation aborted</error>', $output);
+            if (!$input->getOption('no-interaction')) {
+                $confirm = $this->getDialog()->ask($output, '<question>The client will be added to the following directory: ' . $projectsDirectory . ', proceed?</question> ');
+                $allowedAnswers = array("", "y", "yes");
+                if (!in_array($confirm, $allowedAnswers)) {
+                    return $this->cancel('<error>Cancelled, project creation aborted</error>', $output);
+                }
             }
             $clientDir = $this->createClientDir($input, $output, $client, $dryRun);
         }
