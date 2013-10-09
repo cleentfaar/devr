@@ -158,12 +158,20 @@ class DatabaseLoader
         ";
         $tableCreated = $connection->exec($query);
         if ($tableCreated === 0) {
-            $connection->exec("INSERT INTO `configuration` (`key`,`value`) VALUES ('application.name','DEVR')");
-            $connection->exec("INSERT INTO `configuration` (`key`,`value`) VALUES ('application.version','1.0a')");
-            $connection->exec("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.skeleton_dir','/path/to/skeleton')");
-            $connection->exec("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.clients_dir','/path/to/clients')");
-            $connection->exec("INSERT INTO `configuration` (`key`,`value`) VALUES ('environment.hierarchy','clients -> client -> project')");
-            $connection->exec("INSERT INTO `configuration` (`key`,`value`) VALUES ('composer.download_url','http://getcomposer.org/composer.phar')");
+            $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('application.name',:value)");
+            $stmt->execute(array('value'=>'DEVR'));
+            $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('application.version',:value)");
+            $stmt->execute(array('value'=>'1.0a'));
+            if (defined("DEVR_TEST_MODE")) {
+                $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.skeleton_dir', :value)");
+                $stmt->execute(array('value'=>getcwd().'/project_skeleton'));
+                $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.clients_dir',:value)");
+                $stmt->execute(array('value'=>getcwd().'/clients'));
+            }
+            $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('environment.hierarchy',:value)");
+            $stmt->execute(array('value'=>'clients -> client -> project'));
+            $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('composer.download_url',:value)");
+            $stmt->execute(array('value'=>'http://getcomposer.org/composer.phar'));
             return true;
         }
         return false;
