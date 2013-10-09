@@ -8,7 +8,6 @@
 namespace Cleentfaar\Devr\Command;
 
 use Symfony\Component\Console\Command\Command as BaseCommand;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class Command
@@ -25,7 +24,7 @@ class Command extends BaseCommand
         return $this->getHelperSet()->get('dialog');
     }
 
-    protected function cancel($message, OutputInterface $output)
+    protected function cancel($message)
     {
         throw new \RuntimeException($message);
     }

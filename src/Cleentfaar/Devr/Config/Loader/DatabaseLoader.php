@@ -160,6 +160,8 @@ class DatabaseLoader
         if ($tableCreated === 0) {
             $connection->exec("INSERT INTO `configuration` (`key`,`value`) VALUES ('application.name','DEVR')");
             $connection->exec("INSERT INTO `configuration` (`key`,`value`) VALUES ('application.version','1.0a')");
+            $connection->exec("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.skeleton_dir','/path/to/skeleton')");
+            $connection->exec("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.clients_dir','/path/to/clients')");
             $connection->exec("INSERT INTO `configuration` (`key`,`value`) VALUES ('environment.hierarchy','clients -> client -> project')");
             $connection->exec("INSERT INTO `configuration` (`key`,`value`) VALUES ('composer.download_url','http://getcomposer.org/composer.phar')");
             return true;

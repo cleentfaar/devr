@@ -24,24 +24,6 @@ class ProjectCreateCommand extends Command
 {
 
     /**
-     * The path to the skeleton directory to use for projects (directories under a client)
-     * @var string
-     */
-    private $projectSkeletonDir = '/path/to/project/skeleton/dir';
-
-    /**
-     * The path to the root directory where all clients (and their projects) are
-     * @var string
-     */
-    private $projectsDir = '/path/to/projects';
-
-    /**
-     * The (relative) path of a project where it's repository will be cloned into
-     * @var string
-     */
-    private $gitCloneDir = 'project/git'; // relative to projectdir
-
-    /**
      * @see \Symfony\Component\Console\Command\Command::configure()
      */
     protected function configure()
@@ -119,11 +101,11 @@ class ProjectCreateCommand extends Command
     {
         $client = $input->getArgument('client');
         if (!$client) {
-            return $this->cancel('<error>Client\'s name cannot be empty, project creation aborted</error>', $output);
+            return $this->cancel('Client\'s name cannot be empty, project creation aborted');
         }
         $project = $input->getArgument('project');
         if (!$client) {
-            return $this->cancel('<error>Project\'s name cannot be empty, project creation aborted</error>', $output);
+            return $this->cancel('Project\'s name cannot be empty, project creation aborted');
         }
         return array($client,$project);
     }
@@ -133,14 +115,14 @@ class ProjectCreateCommand extends Command
         $validator = Validation::createValidator();
         $errors = $validator->validateValue($client, new Assert\NotBlank());
         if (count($errors)) {
-            return $this->cancel('<error>Client\'s name cannot be empty, project creation aborted</error>', $output);
+            return $this->cancel('Client\'s name cannot be empty, project creation aborted');
         }
 
         $project = $this->getDialog()->ask($output, '<question>What is the name of the project you would like to create?:</question> ');
         $validator = Validation::createValidator();
         $errors = $validator->validateValue($project, new Assert\NotBlank());
         if (count($errors)) {
-            return $this->cancel('<error>Project\'s name cannot be empty, project creation aborted</error>', $output);
+            return $this->cancel('Project\'s name cannot be empty, project creation aborted');
         }
 
         return array($client,$project);
@@ -170,13 +152,13 @@ class ProjectCreateCommand extends Command
      */
     private function createProjectDir(InputInterface $input, OutputInterface $output, $client, $project, $dryRun = true)
     {
-        $projectsDirectory = $this->getProjectsDir();
+        $projectsDirectory = $this->getClientsDir();
         if (!$this->clientDirExists($client)) {
             if (!$input->getOption('no-interaction')) {
                 $confirm = $this->getDialog()->ask($output, '<question>The client will be added to the following directory: ' . $projectsDirectory . ', proceed?</question> ');
                 $allowedAnswers = array("", "y", "yes");
                 if (!in_array($confirm, $allowedAnswers)) {
-                    return $this->cancel('<error>Cancelled, project creation aborted</error>', $output);
+                    return $this->cancel('Cancelled, project creation aborted');
                 }
             }
             $clientDir = $this->createClientDir($input, $output, $client, $dryRun);
@@ -192,7 +174,7 @@ class ProjectCreateCommand extends Command
         $allowedAnswers = array("", "y", "yes");
         $filesystem = new Filesystem();
         if (in_array($useSkeleton, $allowedAnswers)) {
-            $projectSkeletonDir = $this->projectSkeletonDir;
+            $projectSkeletonDir = $this->getProjectSkeletonDir();
             if (!is_dir($projectSkeletonDir)) {
                 throw new \RuntimeException('The skeleton directory to copy does not exist (' . $projectSkeletonDir . ')');
             }
@@ -228,9 +210,10 @@ class ProjectCreateCommand extends Command
             $repoName = $defaultRepoName;
         }
 
-        $cloneDir = $this->getDialog()->ask($output, '<question>Please enter a name for the cloned directory in this project (default is ' . $this->gitCloneDir . ')?</question> ');
+        $defaultCloneDir = $this->getDefaultCloneDir();
+        $cloneDir = $this->getDialog()->ask($output, '<question>Please enter a name for the cloned directory in this project (default is ' . $defaultCloneDir . ')?</question> ');
         if ($cloneDir == '') {
-            $cloneDir = $this->gitCloneDir;
+            $cloneDir = $defaultCloneDir;
         }
 
 
@@ -244,7 +227,7 @@ class ProjectCreateCommand extends Command
         $returnCode = $command->run($input, $output);
 
         if($returnCode == 0) {
-            return $this->cancel('<error>Failed to create repository for this project</error>', $output);
+            return $this->cancel('Failed to create repository for this project');
         }
         $output->writeln('<comment>Repository was successfully created for this project</comment>');
         return true;
@@ -258,7 +241,7 @@ class ProjectCreateCommand extends Command
      */
     private function clientDirExists($client)
     {
-        $clientDir = $this->getProjectsDir() . '/' . $client;
+        $clientDir = $this->getClientsDir() . '/' . $client;
         return is_dir($client);
     }
 
@@ -273,7 +256,7 @@ class ProjectCreateCommand extends Command
      */
     private function createClientDir(InputInterface $input, OutputInterface $output, $client, $dryRun = true)
     {
-        $clientDir = $this->getProjectsDir() . '/' . $client;
+        $clientDir = $this->getClientsDir() . '/' . $client;
         if ($dryRun == false) {
             $filesystem = new Filesystem();
             $filesystem->mkdir($clientDir);
@@ -294,12 +277,39 @@ class ProjectCreateCommand extends Command
     }
 
     /**
-     * Returns the projects root directory, where all client folders are (with their project subfolders)
+     * Returns the path to the project skeleton directory, to be used for new project folders
      *
      * @return string
      */
-    private function getProjectsDir()
+    private function getProjectSkeletonDir()
     {
-        return $this->projectsDir;
+        $configuration = $this->getApplication()->getConfiguration();
+        if (!isset($configuration['projects.skeleton_dir'])) {
+            return $this->cancel("No clients dir is set in the configuration, use 'devgen config:set projects.skeleton_dir PATH_TO_CLIENTS_DIR_HERE' to fix this");
+        }
+        return $configuration['projects.skeleton_dir'];
+    }
+
+    /**
+     * Returns the clients directory, where all client folders are found as subfolders
+     *
+     * @return string
+     */
+    private function getClientsDir()
+    {
+        $configuration = $this->getApplication()->getConfiguration();
+        if (!isset($configuration['projects.clients_dir'])) {
+            return $this->cancel("No clients dir is set in the configuration, use 'devgen config:set projects.clients_dir PATH_TO_CLIENTS_DIR_HERE' to fix this");
+        }
+        return $configuration['projects.clients_dir'];
+    }
+
+    private function getDefaultCloneDir()
+    {
+        $configuration = $this->getApplication()->getConfiguration();
+        if (!isset($configuration['projects.default_clone_dir'])) {
+            return $this->cancel("No clone dir is set in the configuration, use 'devgen config:set projects.default_clone_dir PATH_TO_CLIENTS_DIR_HERE' to fix this");
+        }
+        return $configuration['projects.default_clone_dir'];
     }
 }
