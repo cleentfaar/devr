@@ -11,5 +11,5 @@ tools:
         config:
             standard: PSR1
     php_code_coverage:
-        config_path: app/
+        config_path: app/phpunit.xml.dist
     php_pdepend: true

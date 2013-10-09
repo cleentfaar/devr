@@ -8,9 +8,9 @@
  */
 set_time_limit(0);
 
-require_once(__DIR__ . "/bootstrapper.php");
+require_once(__DIR__ . "/app/bootstrapper.php");
 
 use Cleentfaar\Devr\Console\Application;
 
-$application = new Application(new \Cleentfaar\Devr\Config\Loader\DatabaseLoader());
+$application = new Application();
 $application->run();

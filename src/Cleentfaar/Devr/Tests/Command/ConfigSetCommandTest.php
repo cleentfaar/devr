@@ -31,7 +31,26 @@ class ConfigSetCommandTest extends \PHPUnit_Framework_TestCase
         $output = $commandTester->getDisplay();
         $this->assertRegExp('/Pony/', $output);
 
+        /**
+         * Test setting a key that does not exist yet
+         */
+        /**
+         * Without the --force option (prevented), and with it (allowed)
+         */
         $uniqueKey = uniqid();
+        $commandTester->execute(
+            array(
+                'key' => $uniqueKey,
+                'value' => 'My Little Pony',
+                //'--force' => true,
+            )
+        );
+        $output = $commandTester->getDisplay();
+        $this->assertRegExp('/no key with the name/', $output);
+
+        /**
+         * With the --force option, this should be allowed
+         */
         $commandTester->execute(
             array(
                 'key' => $uniqueKey,

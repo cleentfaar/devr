@@ -115,5 +115,4 @@ class DatabaseLoaderTest
         }
         return false;
     }
-
 }

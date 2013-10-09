@@ -166,5 +166,4 @@ class DatabaseLoader
         }
         return false;
     }
-
 }

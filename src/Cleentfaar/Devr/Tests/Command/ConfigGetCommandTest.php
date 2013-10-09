@@ -19,17 +19,30 @@ class ConfigGetCommandTest extends \PHPUnit_Framework_TestCase
 	public function testExecute()
 	{
 		$application = new Application();
-
 		$command = $application->find('config:get');
-		$commandTester = new CommandTester($command);
+        $commandTester = new CommandTester($command);
+
+        /**
+         * Test retrieving a default key, this should give a real value that is defined initially
+         */
 		$commandTester->execute(
 			array(
 				'key' => 'application.name',
 			)
 		);
-
 		$output = $commandTester->getDisplay();
-
 		$this->assertRegExp('/DEVR/', $output);
+
+        /**
+         * Test retrieving an unexisting key, this should give us a proper error message
+         */
+        $uniqueKey = uniqid();
+        $commandTester->execute(
+            array(
+                'key' => $uniqueKey,
+            )
+        );
+        $output = $commandTester->getDisplay();
+        $this->assertRegExp('/no key with the name/', $output);
 	}
 }
