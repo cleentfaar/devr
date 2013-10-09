@@ -15,8 +15,14 @@ use Symfony\Component\Filesystem\Filesystem;
 class DatabaseLoader
 {
 
+    /**
+     * @var array $data
+     */
     private $data;
 
+    /**
+     * @var \PDO $connection
+     */
     private $connection;
 
     /**
@@ -37,6 +43,10 @@ class DatabaseLoader
         return $this->getData();
     }
 
+    /**
+     * @param array $data
+     * @return bool
+     */
     public function save(array $data)
     {
         $this->data = $data;
@@ -60,6 +70,9 @@ class DatabaseLoader
         return true;
     }
 
+    /**
+     * @return mixed
+     */
     private function getData()
     {
         if (!isset($this->data)) {
@@ -75,6 +88,10 @@ class DatabaseLoader
         return $this->data;
     }
 
+    /**
+     * @return \PDO
+     * @throws \Exception
+     */
     private function getConnection()
     {
         if (!isset($this->connection)) {
@@ -85,7 +102,8 @@ class DatabaseLoader
             }
             $filesystem->chmod($dbDir,0777);
             if (defined("DEVR_TEST_MODE")) {
-                $pathToDb = $dbDir . '/devr.test.'.uniqid().'.sq3';
+                //$pathToDb = $dbDir . '/devr.test.'.uniqid().'.sq3';
+                $pathToDb = ':memory:';
             } else {
                 $pathToDb = $dbDir . '/devr.sq3';
             }
@@ -99,16 +117,21 @@ class DatabaseLoader
                 array(
                     \PDO::ATTR_PERSISTENT => true,
                     \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
                 )
             );
             if (!$this->prepareTables($connection)) {
-                throw new \Exception("Failed to prepare configuration table");
+                throw new \Exception("Failed to prepare tables");
             }
             $this->connection = $connection;
         }
         return $this->connection;
     }
 
+    /**
+     * @param \PDO $connection
+     * @return bool
+     */
     private function prepareTables(\PDO $connection)
     {
         $stmt = $connection->query("SELECT `name` FROM `sqlite_master` WHERE type='table' AND name='configuration';");
@@ -117,6 +140,15 @@ class DatabaseLoader
         if (!empty($result)) {
             return true;
         }
+        return $this->prepareConfigurationTable($connection);
+    }
+
+    /**
+     * @param \PDO $connection
+     * @return bool
+     */
+    private function prepareConfigurationTable(\PDO $connection)
+    {
         $query = "
             CREATE TABLE `configuration` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT,

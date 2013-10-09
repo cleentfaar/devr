@@ -30,5 +30,16 @@ class ConfigSetCommandTest extends \PHPUnit_Framework_TestCase
 		);
         $output = $commandTester->getDisplay();
         $this->assertRegExp('/Pony/', $output);
+
+        $uniqueKey = uniqid();
+        $commandTester->execute(
+            array(
+                'key' => $uniqueKey,
+                'value' => 'My Little Pony',
+                '--force' => true,
+            )
+        );
+        $output = $commandTester->getDisplay();
+        $this->assertRegExp('/Pony/', $output);
 	}
 }
