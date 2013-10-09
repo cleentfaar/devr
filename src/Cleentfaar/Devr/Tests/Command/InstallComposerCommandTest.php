@@ -11,10 +11,10 @@ use Cleentfaar\Devr\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Class InstallComposerCommandTest
+ * Class ComposerInstallCommandTest
  * @package Cleentfaar\Devr\Tests\Command
  */
-class InstallComposerCommandTest extends \PHPUnit_Framework_TestCase
+class ComposerInstallCommandTest extends \PHPUnit_Framework_TestCase
 {
     public function testExecute()
 	{

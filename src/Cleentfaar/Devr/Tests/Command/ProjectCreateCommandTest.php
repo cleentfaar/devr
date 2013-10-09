@@ -11,10 +11,10 @@ use Cleentfaar\Devr\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Class CreateProjectCommandTest
+ * Class ProjectCreateCommandTest
  * @package Cleentfaar\Devr\Tests\Command
  */
-class CreateProjectCommandTest extends \PHPUnit_Framework_TestCase
+class ProjectCreateCommandTest extends \PHPUnit_Framework_TestCase
 {
 	public function testExecute()
 	{

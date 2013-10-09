@@ -10,9 +10,9 @@ namespace Cleentfaar\Devr\Console;
 use Cleentfaar\Devr\Command\ConfigGetCommand;
 use Cleentfaar\Devr\Command\ConfigListCommand;
 use Cleentfaar\Devr\Command\ConfigSetCommand;
-use Cleentfaar\Devr\Command\CreateGitCommand;
-use Cleentfaar\Devr\Command\InstallComposerCommand;
-use Cleentfaar\Devr\Command\CreateProjectCommand;
+use Cleentfaar\Devr\Command\GitCreateCommand;
+use Cleentfaar\Devr\Command\ComposerInstallCommand;
+use Cleentfaar\Devr\Command\ProjectCreateCommand;
 use Cleentfaar\Devr\Config\Loader\DatabaseLoader;
 use Symfony\Component\Console\Application as BaseApplication;
 
@@ -53,9 +53,9 @@ class Application extends BaseApplication {
         $commands[] = new ConfigListCommand();
         $commands[] = new ConfigGetCommand();
         $commands[] = new ConfigSetCommand();
-        $commands[] = new InstallComposerCommand();
-        $commands[] = new CreateProjectCommand();
-        $commands[] = new CreateGitCommand();
+        $commands[] = new ComposerInstallCommand();
+        $commands[] = new ProjectCreateCommand();
+        $commands[] = new GitCreateCommand();
 
         return $commands;
     }

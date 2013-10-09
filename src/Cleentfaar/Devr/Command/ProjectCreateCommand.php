@@ -17,10 +17,10 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class CreateProjectCommand
+ * Class ProjectCreateCommand
  * @package Cleentfaar\Devr\Command
  */
-class CreateProjectCommand extends Command
+class ProjectCreateCommand extends Command
 {
 
     /**
@@ -36,12 +36,6 @@ class CreateProjectCommand extends Command
     private $projectsDir = '/path/to/projects';
 
     /**
-     * The path to the git home directory, where all (shared and bare) repositories reside
-     * @var string
-     */
-    private $gitHomeDir = '/path/to/repositories';
-
-    /**
      * The (relative) path of a project where it's repository will be cloned into
      * @var string
      */
@@ -52,7 +46,7 @@ class CreateProjectCommand extends Command
      */
     protected function configure()
     {
-        $this->setName('create:project');
+        $this->setName('project:create');
         $this->setDescription('Creates a new project for a client');
         $this->addOption(
             'dry-run',

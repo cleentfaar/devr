@@ -11,7 +11,7 @@ To get help on a certain command, simply execute: ``devr command_namespace:comma
 Currently, the following commands are available to you:
 
 
-### install:composer ###
+### composer:install ###
 
 Installs composer in the working directory, e.g. for easy use in a project.
 NOTE: This is not meant to be used to install DEVR itself, you will still need to do that manually (at least once)!
@@ -32,7 +32,7 @@ Options:
 ```
 
 
-### create:project ###
+### project:create ###
 
 Creates a new project for a client
 ```
@@ -53,7 +53,7 @@ Options:
 There are also a number of commands related to configuring DEVR itself, for this, see [the Configuration doc](2-Configuration.md)
 
 
-### create:git ###
+### git:create ###
 
 Creates a git repository with the given name, optionally cloning it to the 'clone-to' value
 ```

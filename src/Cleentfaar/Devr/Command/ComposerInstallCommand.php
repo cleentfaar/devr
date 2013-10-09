@@ -15,10 +15,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class InstallComposerCommand
+ * Class ComposerInstallCommand
  * @package Cleentfaar\Devr\Command
  */
-class InstallComposerCommand extends Command
+class ComposerInstallCommand extends Command
 {
 
 	private $composerUrl = 'http://getcomposer.org/composer.phar';
@@ -28,7 +28,7 @@ class InstallComposerCommand extends Command
 	 */
     protected function configure()
     {
-        $this->setName('install:composer');
+        $this->setName('composer:install');
         $this->setDescription('Installs composer in the working directory');
         $this->addOption(
 			'auto-install',

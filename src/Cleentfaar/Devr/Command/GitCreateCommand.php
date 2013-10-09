@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * Class ConfigGetCommand
  * @package Cleentfaar\Devr\Command
  */
-class CreateGitCommand extends Command
+class GitCreateCommand extends Command
 {
 
     /**
@@ -26,26 +26,11 @@ class CreateGitCommand extends Command
     private $argumentSeparator = ';';
 
     /**
-     * @see \Symfony\Component\Console\Command\Command::initialize()
-     */
-    protected function initialize(InputInterface $input, OutputInterface $output)
-    {
-        switch (strtolower(substr(PHP_OS,0,3))) {
-            case 'win':
-                $this->argumentSeparator = '&';
-                break;
-            default:
-                $this->argumentSeparator = ';';
-                break;
-        }
-    }
-
-    /**
      * @see \Symfony\Component\Console\Command\Command::configure()
      */
     protected function configure()
     {
-        $this->setName('create:git');
+        $this->setName('git:create');
         $this->setDescription('Creates a git repository with the given name, optionally cloning it to the \'clone-to\' value');
         $this->addArgument(
             'name',
@@ -70,6 +55,21 @@ class CreateGitCommand extends Command
             InputOption::VALUE_NONE,
             'Use this to overwrite a repository if it already exists. WARNING! This can be very dangerous!'
         );
+    }
+
+    /**
+     * @see \Symfony\Component\Console\Command\Command::initialize()
+     */
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        switch (strtolower(substr(PHP_OS,0,3))) {
+            case 'win':
+                $this->argumentSeparator = '&';
+                break;
+            default:
+                $this->argumentSeparator = ';';
+                break;
+        }
     }
 
     /**
@@ -142,14 +142,4 @@ class CreateGitCommand extends Command
             $output->writeln("<comment>Executed command for clone: " . $command . "</comment>");
         }
     }
-
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
-    protected function interact(InputInterface $input, OutputInterface $output)
-    {
-        $output->writeln("<comment>Interacting...</comment>");
-    }
-
 }
