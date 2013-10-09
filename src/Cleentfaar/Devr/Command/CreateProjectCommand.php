@@ -7,6 +7,7 @@
  */
 namespace Cleentfaar\Devr\Command;
 
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -51,15 +52,24 @@ class CreateProjectCommand extends Command
      */
     protected function configure()
     {
-        $this
-            ->setName('create:project')
-            ->setDescription('Creates a new project for a client')
-            ->addOption(
-                'dry-run',
-                'd',
-                InputOption::VALUE_NONE,
-                'Use this to only show what would happen, without writing to any files'
-            );
+        $this->setName('create:project');
+        $this->setDescription('Creates a new project for a client');
+        $this->addOption(
+            'dry-run',
+            'd',
+            InputOption::VALUE_NONE,
+            'Use this to only show what would happen, without writing to any files'
+        );
+        $this->addArgument(
+            'client',
+            InputArgument::OPTIONAL,
+            'The name of the client to create a project for (used in no-interaction mode)'
+        );
+        $this->addArgument(
+            'project',
+            InputArgument::OPTIONAL,
+            'The name of the project for the given client (used in no-interaction mode)'
+        );
     }
 
     /**
@@ -71,40 +81,12 @@ class CreateProjectCommand extends Command
         if ($input->getOption('dry-run')) {
             $dryRun = true;
         }
-        $interactive = true;
         if ($input->getOption('no-interaction')) {
-            $interactive = false;
-        }
-        if ($interactive === false) {
-            $output->writeln('<error>Currently not supporting non-interactive mode, coming soon!</error>');
-            return;
+            list($client, $project) = $this->executeNonInteractively($input, $output);
+        } else {
+            list($client, $project) = $this->executeInteractively($input, $output);
         }
 
-        $client = $this->getDialog()->ask($output, '<question>Which client would you like to create a project for?:</question> ');
-        $validator = Validation::createValidator();
-        $errors = $validator->validateValue($client, new Assert\NotBlank());
-        if (count($errors)) {
-            $output->writeln('<error>Client cannot be empty, project creation aborted</error>');
-            return;
-        }
-
-        $project = $this->getDialog()->ask($output, '<question>What is the name of the project you would like to create?:</question> ');
-        $validator = Validation::createValidator();
-        $errors = $validator->validateValue($project, new Assert\NotBlank());
-        if (count($errors)) {
-            $output->writeln('<error>Projectname cannot be empty, project creation aborted</error>');
-            return;
-        }
-
-        $projectsDirectory = $this->getProjectsDir();
-        $output->writeln('');
-
-        $confirm = $this->getDialog()->ask($output, '<question>The client will be added to the following directory: ' . $projectsDirectory . ', proceed?</question> ');
-        $allowedAnswers = array("", "y", "yes");
-        if (!in_array($confirm, $allowedAnswers)) {
-            $output->writeln('<error>Cancelled, project creation aborted</error>');
-            return;
-        }
         $projectDir = $this->createProjectDir($input, $output, $client, $project, $dryRun);
 
         $createGit = $this->getDialog()->ask($output, '<question>Would you like to create a git repository for this project?:</question> ');
@@ -115,9 +97,45 @@ class CreateProjectCommand extends Command
 
         $createDatabase = $this->getDialog()->ask($output, '<question>Would you like to create a database for this project?:</question> ');
         $allowedAnswers = array("y", "yes");
-        if (in_array($createGit, $allowedAnswers)) {
+        if (in_array($createDatabase, $allowedAnswers)) {
             $this->createDatabase($input, $output, $projectDir, $dryRun);
         }
+    }
+
+    /**
+     * @param InputInterface $input
+     * @return array|void
+     */
+    private function executeNonInteractively(InputInterface $input, OutputInterface $output)
+    {
+        $client = $input->getArgument('client');
+        if (!$client) {
+            return $this->cancel('<error>Client\'s name cannot be empty, project creation aborted</error>', $output);
+        }
+        $project = $input->getArgument('project');
+        if (!$client) {
+            return $this->cancel('<error>Project\'s name cannot be empty, project creation aborted</error>', $output);
+        }
+        return array($client,$project);
+    }
+    private function executeInteractively(InputInterface $input, OutputInterface $output)
+    {
+        $client = $this->getDialog()->ask($output, '<question>Which client would you like to create a project for?:</question> ');
+        $validator = Validation::createValidator();
+        $errors = $validator->validateValue($client, new Assert\NotBlank());
+        if (count($errors)) {
+            return $this->cancel('<error>Client\'s name cannot be empty, project creation aborted</error>', $output);
+        }
+
+        $project = $this->getDialog()->ask($output, '<question>What is the name of the project you would like to create?:</question> ');
+        $validator = Validation::createValidator();
+        $errors = $validator->validateValue($project, new Assert\NotBlank());
+        if (count($errors)) {
+            return $this->cancel('<error>Project\'s name cannot be empty, project creation aborted</error>', $output);
+        }
+
+        return array($client,$project);
+
     }
 
     private function getDatabaseConnection($driver, $hostname, $username, $password)
@@ -166,7 +184,13 @@ class CreateProjectCommand extends Command
      */
     private function createProjectDir(InputInterface $input, OutputInterface $output, $client, $project, $dryRun = true)
     {
+        $projectsDirectory = $this->getProjectsDir();
         if (!$this->clientDirExists($client)) {
+            $confirm = $this->getDialog()->ask($output, '<question>The client will be added to the following directory: ' . $projectsDirectory . ', proceed?</question> ');
+            $allowedAnswers = array("", "y", "yes");
+            if (!in_array($confirm, $allowedAnswers)) {
+                return $this->cancel('<error>Cancelled, project creation aborted</error>', $output);
+            }
             $clientDir = $this->createClientDir($input, $output, $client, $dryRun);
         }
 
@@ -185,9 +209,9 @@ class CreateProjectCommand extends Command
                 $filesystem->mirror($projectSkeletonDir, $projectDir);
                 chmod($projectDir, 0777);
             }
-            $output->writeln("<comment>Created projectdirectory using skeleton in $projectDir</comment>");
+            $output->writeln("<comment>Created project using skeleton in $projectDir</comment>");
         } else {
-            $output->writeln("<comment>Creating projectdirectory with simple directory in $projectDir</comment>");
+            $output->writeln("<comment>Created project as an empty directory in $projectDir</comment>");
             if ($dryRun == false) {
                 $filesystem->mkdir($projectDir);
                 chmod($projectDir, 0777);
@@ -217,28 +241,21 @@ class CreateProjectCommand extends Command
             $cloneDir = $this->gitCloneDir;
         }
 
-        $gitHomeDir = $this->getGitHomeDir();
 
-        $output->writeln("<comment>Creating git repository in " . $gitHomeDir . "</comment>");
-        $command = 'mkdir ' . $gitHomeDir . '/' . $repoName . '.git; cd ' . $gitHomeDir . '/' . $repoName . '.git; git init --shared --bare';
-        if ($dryRun == false) {
-            ob_start();
-            exec($command);
-            ob_end_clean();
-            chmod($gitHomeDir . '/' . $repoName, 0777);
+        $command = $this->getApplication()->find('create:git');
+        $arguments = array(
+            //'--force' => true
+            'name' => $repoName,
+            '--clone-to' => $cloneDir
+        );
+        $input = new ArrayInput($arguments);
+        $returnCode = $command->run($input, $output);
+
+        if($returnCode == 0) {
+            return $this->cancel('<error>Failed to create repository for this project</error>', $output);
         }
-        $output->writeln("<comment>Executed command for init: " . $command . "</comment>");
-
-        $output->writeln("<comment>Cloning git repository into " . $projectDir . '/' . $cloneDir . "</comment>");
-        $command = 'git clone ' . $gitHomeDir . '/' . $repoName . '.git ' . $projectDir . '/' . $cloneDir;
-        if ($dryRun == false) {
-            ob_start();
-            exec($command);
-            ob_end_clean();
-            chmod($projectDir . '/' . $cloneDir, 0777);
-        }
-        $output->writeln("<comment>Executed command for clone: " . $command . "</comment>");
-
+        $output->writeln('<comment>Repository was successfully created for this project</comment>');
+        return true;
     }
 
     /**

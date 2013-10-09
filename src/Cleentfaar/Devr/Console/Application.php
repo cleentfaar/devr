@@ -10,6 +10,7 @@ namespace Cleentfaar\Devr\Console;
 use Cleentfaar\Devr\Command\ConfigGetCommand;
 use Cleentfaar\Devr\Command\ConfigListCommand;
 use Cleentfaar\Devr\Command\ConfigSetCommand;
+use Cleentfaar\Devr\Command\CreateGitCommand;
 use Cleentfaar\Devr\Command\InstallComposerCommand;
 use Cleentfaar\Devr\Command\CreateProjectCommand;
 use Cleentfaar\Devr\Config\Loader\DatabaseLoader;
@@ -54,6 +55,7 @@ class Application extends BaseApplication {
         $commands[] = new ConfigSetCommand();
         $commands[] = new InstallComposerCommand();
         $commands[] = new CreateProjectCommand();
+        $commands[] = new CreateGitCommand();
 
         return $commands;
     }

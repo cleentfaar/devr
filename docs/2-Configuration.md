@@ -4,9 +4,9 @@ DEVR - Configuration
 There are special commands available for manipulating the DEVR configuration while it's installed on your system. These
 commands are listed below.
 
-The commands generally can be executed as follows: ``devr command:here``
+The commands generally can be executed as follows: ``devr command_namespace:command``
 
-To get help on a certain command, simply execute: ``devr command:here --help``
+To get help on a certain command, simply execute: ``devr command_namespace:command --help``
 
 
 ### config:list ###

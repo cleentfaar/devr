@@ -54,18 +54,13 @@ class ConfigSetCommand extends Command
         $value = $input->getArgument('value');
         $new = false;
         if (!isset($configuration[$key])) {
-            if (stristr($key,'.')) {
-                $this->setArrayFromString($configuration,$key,$value);
-            } else {
-                $new = true;
-                if ($createIfNotExists == false) {
-                    $output->writeln("There is no key with the name '$key' defined in the configuration");
-                    return 0;
-                }
+            $new = true;
+            if ($createIfNotExists == false) {
+                $output->writeln("There is no key with the name '$key' defined in the configuration");
+                return 0;
             }
-        } else {
-            $configuration[$key] = $value;
         }
+        $configuration[$key] = $value;
         $success = $this->getApplication()->saveConfiguration($configuration);
         if ($success === false) {
             $output->writeln("Failed to save the new configuration");
@@ -76,14 +71,5 @@ class ConfigSetCommand extends Command
             $output->writeln("Value of key '$key' was changed to: $value");
         }
         return 1;
-    }
-
-    private function setArrayFromString(&$array, $keys, $value) {
-        $keys = explode(".", $keys);
-        $current = &$array;
-        foreach($keys as $key) {
-            $current = &$current[$key];
-        }
-        $current = $value;
     }
 }
