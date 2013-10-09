@@ -22,15 +22,20 @@ class ProjectCreateCommandTest extends \PHPUnit_Framework_TestCase
 
 		$command = $application->find('project:create');
 		$commandTester = new CommandTester($command);
+
+        $client = uniqid();
+        $project = uniqid();
+
 		$commandTester->execute(
 			array(
-				'--dry-run'			=> true,
-				'--no-interaction' 	=> true,
+				'client' => $client,
+				'project' => $project,
+				'--no-interaction' => true,
 			)
 		);
 
 		$output = $commandTester->getDisplay();
 
-		$this->assertRegExp('/Currently not supporting non-interactive mode/', $output);
+		$this->assertRegExp('/Created project/', $output);
 	}
 }

@@ -48,12 +48,6 @@ class ProjectCreateCommand extends Command
     {
         $this->setName('project:create');
         $this->setDescription('Creates a new project for a client');
-        $this->addOption(
-            'dry-run',
-            'd',
-            InputOption::VALUE_NONE,
-            'Use this to only show what would happen, without writing to any files'
-        );
         $this->addArgument(
             'client',
             InputArgument::OPTIONAL,
@@ -63,6 +57,24 @@ class ProjectCreateCommand extends Command
             'project',
             InputArgument::OPTIONAL,
             'The name of the project for the given client (used in no-interaction mode)'
+        );
+        $this->addOption(
+            'dry-run',
+            'd',
+            InputOption::VALUE_NONE,
+            'Use this to only show what would happen, without writing to any files'
+        );
+        $this->addOption(
+            'create-git',
+            'g',
+            InputOption::VALUE_NONE,
+            'Flag to indicate the creation of a git repository for this project, this uses the configuration\'s \'git.home_dir\' key'
+        );
+        $this->addOption(
+            'use-skeleton',
+            's',
+            InputOption::VALUE_NONE,
+            'Flag to indicate the use of a skeleton directory as a base for the new project, this uses the configuration\'s \'project.skeleton_dir\' key'
         );
     }
 
@@ -190,7 +202,11 @@ class ProjectCreateCommand extends Command
 
         $projectDir = $clientDir . '/' . $project;
 
-        $useSkeleton = $this->getDialog()->ask($output, '<question>Would you like to use the skeleton-directory for creating a project within this client (default is yes)?</question> ');
+        if ($input->getOption('no-interaction')) {
+            $useSkeleton = $input->getOption('use-skeleton') == true ? 'y' : 'n';
+        } else {
+            $useSkeleton = $this->getDialog()->ask($output, '<question>Would you like to use the skeleton-directory for creating a project within this client (default is yes)?</question> ');
+        }
         $allowedAnswers = array("", "y", "yes");
         $filesystem = new Filesystem();
         if (in_array($useSkeleton, $allowedAnswers)) {
@@ -236,7 +252,7 @@ class ProjectCreateCommand extends Command
         }
 
 
-        $command = $this->getApplication()->find('create:git');
+        $command = $this->getApplication()->find('git:create');
         $arguments = array(
             //'--force' => true
             'name' => $repoName,

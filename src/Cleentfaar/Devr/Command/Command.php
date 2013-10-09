@@ -27,7 +27,6 @@ class Command extends BaseCommand
 
     protected function cancel($message, OutputInterface $output)
     {
-        $output->writeln($message);
-        exit;
+        throw new \RuntimeException($message);
     }
 }
