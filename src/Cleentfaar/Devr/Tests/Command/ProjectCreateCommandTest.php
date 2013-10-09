@@ -20,7 +20,7 @@ class ProjectCreateCommandTest extends \PHPUnit_Framework_TestCase
 	{
 		$application = new Application();
 
-		$command = $application->find('create:project');
+		$command = $application->find('project:create');
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(
 			array(

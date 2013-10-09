@@ -20,7 +20,7 @@ class ComposerInstallCommandTest extends \PHPUnit_Framework_TestCase
 	{
 		$application = new Application();
 
-		$command = $application->find('install:composer');
+		$command = $application->find('composer:install');
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(
 			array(
