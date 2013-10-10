@@ -7,12 +7,7 @@
  */
 namespace Cleentfaar\Devr\Console;
 
-use Cleentfaar\Devr\Command\ConfigGetCommand;
-use Cleentfaar\Devr\Command\ConfigListCommand;
-use Cleentfaar\Devr\Command\ConfigSetCommand;
-use Cleentfaar\Devr\Command\GitCreateCommand;
-use Cleentfaar\Devr\Command\ComposerInstallCommand;
-use Cleentfaar\Devr\Command\ProjectCreateCommand;
+use Cleentfaar\Devr\Command;
 use Cleentfaar\Devr\Config\Loader\DatabaseLoader;
 use Symfony\Component\Console\Application as BaseApplication;
 
@@ -20,7 +15,8 @@ use Symfony\Component\Console\Application as BaseApplication;
  * Class Application
  * @package Cleentfaar\Console
  */
-class Application extends BaseApplication {
+class Application extends BaseApplication
+{
 
     /**
      * The indentation level used for writing to the configuration file
@@ -36,26 +32,28 @@ class Application extends BaseApplication {
     /**
      * @param DatabaseLoader $configurationLoader
      */
-    public function __construct(DatabaseLoader $configurationLoader = null) {
+    public function __construct(DatabaseLoader $configurationLoader = null)
+    {
         if ($configurationLoader === null) {
             $configurationLoader = new DatabaseLoader();
         }
         $this->configurationLoader = $configurationLoader;
         parent::__construct($configurationLoader->get('application.name'), $configurationLoader->get('application.version'));
-	}
+    }
 
     /**
      * @return array|\Symfony\Component\Console\Command\Command[]
      */
-    public function getDefaultCommands() {
+    public function getDefaultCommands()
+    {
         $commands = parent::getDefaultCommands();
 
-        $commands[] = new ConfigListCommand();
-        $commands[] = new ConfigGetCommand();
-        $commands[] = new ConfigSetCommand();
-        $commands[] = new ComposerInstallCommand();
-        $commands[] = new ProjectCreateCommand();
-        $commands[] = new GitCreateCommand();
+        $commands[] = new Command\Config\ListCommand();
+        $commands[] = new Command\Config\GetCommand();
+        $commands[] = new Command\Config\SetCommand();
+        $commands[] = new Command\Composer\InstallCommand();
+        $commands[] = new Command\Project\CreateCommand();
+        $commands[] = new Command\Git\CreateCommand();
 
         return $commands;
     }

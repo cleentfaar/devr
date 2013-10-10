@@ -16,18 +16,18 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class ConfigSetCommandTest extends \PHPUnit_Framework_TestCase
 {
-	public function testExecute()
-	{
-		$application = new Application();
+    public function testExecute()
+    {
+        $application = new Application();
 
-		$command = $application->find('config:set');
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(
-			array(
-				'key' => 'application.name',
-				'value' => 'My Little Pony',
-			)
-		);
+        $command = $application->find('config:set');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'key' => 'application.name',
+                'value' => 'My Little Pony',
+            )
+        );
         $output = $commandTester->getDisplay();
         $this->assertRegExp('/Pony/', $output);
 
@@ -60,5 +60,5 @@ class ConfigSetCommandTest extends \PHPUnit_Framework_TestCase
         );
         $output = $commandTester->getDisplay();
         $this->assertRegExp('/Pony/', $output);
-	}
+    }
 }

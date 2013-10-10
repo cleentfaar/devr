@@ -5,23 +5,23 @@
  * @author Cas Leentfaar
  * @license http://github.com/cleentfaar/devr
  */
-namespace Cleentfaar\Devr\Command;
+namespace Cleentfaar\Devr\Command\Config;
 
+use Cleentfaar\Devr\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class ConfigGetCommand
- * @package Cleentfaar\Devr\Command
+ * Class GetCommand
+ * @package Cleentfaar\Devr\Command\Config
  */
-class ConfigGetCommand extends Command
+class GetCommand extends Command
 {
-	/**
-	 * @see \Symfony\Component\Console\Command\Command::configure()
-	 */
+    /**
+     * @see \Symfony\Component\Console\Command\Command::configure()
+     */
     protected function configure()
     {
         $this->setName('config:get');
@@ -41,8 +41,8 @@ class ConfigGetCommand extends Command
         $configuration = $this->getApplication()->getConfiguration();
         $key = $input->getArgument('key');
         $value = null;
-        if (!isset($configuration[$key]) && stristr($key,'.')) {
-            $parts = explode('.',$key);
+        if (!isset($configuration[$key]) && stristr($key, '.')) {
+            $parts = explode('.', $key);
             $base = $configuration;
             $x = 1;
             foreach ($parts as $part) {

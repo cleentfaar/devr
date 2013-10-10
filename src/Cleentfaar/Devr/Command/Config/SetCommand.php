@@ -5,18 +5,19 @@
  * @author Cas Leentfaar
  * @license http://github.com/cleentfaar/devr
  */
-namespace Cleentfaar\Devr\Command;
+namespace Cleentfaar\Devr\Command\Config;
 
+use Cleentfaar\Devr\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class ConfigGetCommand
- * @package Cleentfaar\Devr\Command
+ * Class SetCommand
+ * @package Cleentfaar\Devr\Command\Config
  */
-class ConfigSetCommand extends Command
+class SetCommand extends Command
 {
     /**
      * @see \Symfony\Component\Console\Command\Command::configure()

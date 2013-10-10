@@ -5,8 +5,9 @@
  * @author Cas Leentfaar
  * @license http://github.com/cleentfaar/devr
  */
-namespace Cleentfaar\Devr\Command;
+namespace Cleentfaar\Devr\Command\Project;
 
+use Cleentfaar\Devr\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,10 +18,10 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class ProjectCreateCommand
- * @package Cleentfaar\Devr\Command
+ * Class CreateCommand
+ * @package Cleentfaar\Devr\Command\Project
  */
-class ProjectCreateCommand extends Command
+class CreateCommand extends Command
 {
 
     /**
@@ -88,9 +89,9 @@ class ProjectCreateCommand extends Command
         $createDatabase = $this->getDialog()->ask($output, '<question>Would you like to create a database for this project?:</question> ');
         $allowedAnswers = array("y", "yes");
         if (in_array($createDatabase, $allowedAnswers)) {
-            $this->createDatabase($input, $output, $projectDir, $input->getOption('dry-run'));
+        $this->createDatabase($input, $output, $projectDir, $input->getOption('dry-run'));
         }
-        */
+         */
     }
 
     /**
@@ -107,7 +108,7 @@ class ProjectCreateCommand extends Command
         if (!$client) {
             return $this->cancel('Project\'s name cannot be empty, project creation aborted');
         }
-        return array($client,$project);
+        return array($client, $project);
     }
 
     /**
@@ -131,7 +132,7 @@ class ProjectCreateCommand extends Command
             return $this->cancel('Project\'s name cannot be empty, project creation aborted');
         }
 
-        return array($client,$project);
+        return array($client, $project);
 
     }
 
@@ -223,7 +224,7 @@ class ProjectCreateCommand extends Command
         $input = new ArrayInput($arguments);
         $returnCode = $command->run($input, $output);
 
-        if($returnCode == 0) {
+        if ($returnCode == 0) {
             return $this->cancel('Failed to create repository for this project');
         }
         $output->writeln('<comment>Repository was successfully created for this project</comment>');

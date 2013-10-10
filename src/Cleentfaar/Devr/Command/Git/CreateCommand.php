@@ -5,8 +5,9 @@
  * @author Cas Leentfaar
  * @license http://github.com/cleentfaar/devr
  */
-namespace Cleentfaar\Devr\Command;
+namespace Cleentfaar\Devr\Command\Git;
 
+use Cleentfaar\Devr\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,7 +18,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * Class ConfigGetCommand
  * @package Cleentfaar\Devr\Command
  */
-class GitCreateCommand extends Command
+class CreateCommand extends Command
 {
 
     /**
@@ -62,7 +63,7 @@ class GitCreateCommand extends Command
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        switch (strtolower(substr(PHP_OS,0,3))) {
+        switch (strtolower(substr(PHP_OS, 0, 3))) {
             case 'win':
                 $this->argumentSeparator = '&';
                 break;
@@ -99,7 +100,7 @@ class GitCreateCommand extends Command
         $output->writeln("<comment>Creating git repository in " . $gitHomeDir . "</comment>");
         $filesystem = new Filesystem();
         $repoPath = $gitHomeDir . DIRECTORY_SEPARATOR . $repoName . '.git';
-        $command = 'cd ' . $repoPath .  ' '.$this->argumentSeparator.' git init --shared --bare';
+        $command = 'cd ' . $repoPath . ' ' . $this->argumentSeparator . ' git init --shared --bare';
         if (!$filesystem->exists($gitHomeDir)) {
             if (!$input->getOption('dry-run')) {
                 $filesystem->mkdir($gitHomeDir);
@@ -108,7 +109,7 @@ class GitCreateCommand extends Command
         }
         if (!$input->getOption('dry-run')) {
             if (!$input->getOption('force') && $filesystem->exists($repoPath)) {
-                return $this->cancel('<error>Can\'t create git repository here, the directory ('.$repoPath.') already exists, use the --force option to overwrite</error>', $output);
+                return $this->cancel('<error>Can\'t create git repository here, the directory (' . $repoPath . ') already exists, use the --force option to overwrite</error>', $output);
             }
             $repoPath = realpath($repoPath);
             $filesystem->mkdir($repoPath);
