@@ -169,26 +169,35 @@ class CreateCommand extends Command
             $useSkeleton = $this->getDialog()->ask($output, '<question>Would you like to use the skeleton-directory for creating a project within this client (default is yes)?</question> ');
         }
         $allowedAnswers = array("", "y", "yes");
-        $filesystem = new Filesystem();
         if (in_array($useSkeleton, $allowedAnswers)) {
+            $this->createProjectSkeleton($projectDir, $input, $output);
+        } else {
+            $this->createProjectSkeleton($projectDir, $input, $output, true);
+        }
+        return $projectDir;
+    }
+
+    private function createProjectSkeleton($projectDir, InputInterface $input, OutputInterface $output, $asFlatDir = false)
+    {
+        $filesystem = new Filesystem();
+        if ($asFlatDir) {
+            $output->writeln("<comment>Created project as an empty directory in $projectDir</comment>");
+            if ($input->getOption('dry-run') == false) {
+                $filesystem->mkdir($projectDir);
+                chmod($projectDir, 0777);
+            }
+        } else {
             $projectSkeletonDir = $this->getProjectSkeletonDir();
             if (!is_dir($projectSkeletonDir)) {
                 throw new \RuntimeException('The skeleton directory to copy does not exist (' . $projectSkeletonDir . ')');
             }
-            if ($dryRun == false) {
+            if ($input->getOption('dry-run') == false) {
                 $filesystem->mkdir($projectDir);
                 $filesystem->mirror($projectSkeletonDir, $projectDir);
                 chmod($projectDir, 0777);
             }
             $output->writeln("<comment>Created project using skeleton in $projectDir</comment>");
-        } else {
-            $output->writeln("<comment>Created project as an empty directory in $projectDir</comment>");
-            if ($dryRun == false) {
-                $filesystem->mkdir($projectDir);
-                chmod($projectDir, 0777);
-            }
         }
-        return $projectDir;
     }
 
     /**

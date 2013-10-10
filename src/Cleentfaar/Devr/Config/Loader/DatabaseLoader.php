@@ -6,6 +6,7 @@
  * @license http://github.com/cleentfaar/devr
  */
 namespace Cleentfaar\Devr\Config\Loader;
+
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -53,9 +54,9 @@ class DatabaseLoader
         foreach ($data as $key => $value) {
             $query = "SELECT `key` FROM `configuration` WHERE `key` = :key";
             $stmt = $this->getConnection()->prepare($query);
-            $stmt->execute(array('key'=>$key));
+            $stmt->execute(array('key' => $key));
             $rows = $stmt->fetchAll();
-            $params = array('key'=>$key,'value'=>$value);
+            $params = array('key' => $key, 'value' => $value);
             if (!empty($rows)) {
                 $query = "UPDATE `configuration` SET `value` = :value WHERE `key` = :key";
             } else {
@@ -100,7 +101,7 @@ class DatabaseLoader
             if (!is_dir($dbDir)) {
                 $filesystem->mkdir($dbDir);
             }
-            $filesystem->chmod($dbDir,0777);
+            $filesystem->chmod($dbDir, 0777);
             if (defined("DEVR_TEST_MODE")) {
                 //$pathToDb = $dbDir . '/devr.test.'.uniqid().'.sq3';
                 $pathToDb = ':memory:';
@@ -108,7 +109,7 @@ class DatabaseLoader
                 $pathToDb = $dbDir . '/devr.sq3';
             }
             if ($filesystem->exists($pathToDb)) {
-                $filesystem->chmod($pathToDb,0777);
+                $filesystem->chmod($pathToDb, 0777);
             }
             $connection = new \PDO(
                 'sqlite:' . $pathToDb,
@@ -159,13 +160,13 @@ class DatabaseLoader
         $tableCreated = $connection->exec($query);
         if ($tableCreated === 0) {
             $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('application.name',:value)");
-            $stmt->execute(array('value'=>'DEVR'));
+            $stmt->execute(array('value' => 'DEVR'));
             $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('application.version',:value)");
-            $stmt->execute(array('value'=>'1.0a'));
+            $stmt->execute(array('value' => '1.0a'));
             $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('environment.hierarchy',:value)");
-            $stmt->execute(array('value'=>'clients -> client -> project'));
+            $stmt->execute(array('value' => 'clients -> client -> project'));
             $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('composer.download_url',:value)");
-            $stmt->execute(array('value'=>'http://getcomposer.org/composer.phar'));
+            $stmt->execute(array('value' => 'http://getcomposer.org/composer.phar'));
             if (defined("DEVR_TEST_MODE")) {
                 $this->insertTestConfiguration($connection);
             }
@@ -181,9 +182,9 @@ class DatabaseLoader
     private function insertTestConfiguration(\PDO $connection)
     {
         $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.skeleton_dir', :value)");
-        $stmt->execute(array('value'=>getcwd().'/project_skeleton'));
+        $stmt->execute(array('value' => getcwd() . '/project_skeleton'));
         $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.clients_dir',:value)");
-        $stmt->execute(array('value'=>getcwd().'/clients'));
+        $stmt->execute(array('value' => getcwd() . '/clients'));
         return true;
     }
 }
