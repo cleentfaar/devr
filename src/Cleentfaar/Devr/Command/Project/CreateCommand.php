@@ -163,41 +163,55 @@ class CreateCommand extends Command
 
         $projectDir = $clientDir . '/' . $project;
 
+        $useSkeleton = $this->shouldUseSkeleton($input, $output);
+        if ($useSkeleton == true) {
+            $this->createProjectDirAsSkeleton($projectDir, $input, $output);
+        } else {
+            $this->createProjectDirAsSimplified($projectDir, $input, $output);
+        }
+        return $projectDir;
+    }
+
+    private function shouldUseSkeleton(InputInterface $input, OutputInterface $output)
+    {
         if ($input->getOption('no-interaction')) {
             $useSkeleton = $input->getOption('use-skeleton') == true ? 'y' : 'n';
         } else {
             $useSkeleton = $this->getDialog()->ask($output, '<question>Would you like to use the skeleton-directory for creating a project within this client (default is yes)?</question> ');
         }
-        $allowedAnswers = array("", "y", "yes");
-        if (in_array($useSkeleton, $allowedAnswers)) {
-            $this->createProjectSkeleton($projectDir, $input, $output);
-        } else {
-            $this->createProjectSkeleton($projectDir, $input, $output, true);
-        }
-        return $projectDir;
+        return $useSkeleton;
     }
 
-    private function createProjectSkeleton($projectDir, InputInterface $input, OutputInterface $output, $asFlatDir = false)
+    /**
+     * @param $projectDir
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param bool $asFlatDir
+     * @throws \RuntimeException
+     */
+    private function createProjectDirAsSimplified($projectDir, InputInterface $input, OutputInterface $output)
     {
         $filesystem = new Filesystem();
-        if ($asFlatDir) {
-            $output->writeln("<comment>Created project as an empty directory in $projectDir</comment>");
-            if ($input->getOption('dry-run') == false) {
-                $filesystem->mkdir($projectDir);
-                chmod($projectDir, 0777);
-            }
-        } else {
-            $projectSkeletonDir = $this->getProjectSkeletonDir();
-            if (!is_dir($projectSkeletonDir)) {
-                throw new \RuntimeException('The skeleton directory to copy does not exist (' . $projectSkeletonDir . ')');
-            }
-            if ($input->getOption('dry-run') == false) {
-                $filesystem->mkdir($projectDir);
-                $filesystem->mirror($projectSkeletonDir, $projectDir);
-                chmod($projectDir, 0777);
-            }
-            $output->writeln("<comment>Created project using skeleton in $projectDir</comment>");
+        $output->writeln("<comment>Created project as an empty directory in $projectDir</comment>");
+        if ($input->getOption('dry-run') == false) {
+            $filesystem->mkdir($projectDir);
+            chmod($projectDir, 0777);
         }
+    }
+
+    private function createProjectDirAsSkeleton($projectDir, InputInterface $input, OutputInterface $output)
+    {
+        $filesystem = new Filesystem();
+        $projectSkeletonDir = $this->getProjectSkeletonDir();
+        if (!is_dir($projectSkeletonDir)) {
+            throw new \RuntimeException('The skeleton directory to copy does not exist (' . $projectSkeletonDir . ')');
+        }
+        if ($input->getOption('dry-run') == false) {
+            $filesystem->mkdir($projectDir);
+            $filesystem->mirror($projectSkeletonDir, $projectDir);
+            chmod($projectDir, 0777);
+        }
+        $output->writeln("<comment>Created project using skeleton in $projectDir</comment>");
     }
 
     /**
