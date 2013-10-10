@@ -1,8 +1,10 @@
 DEVR - Installation
 ========================================================================================================================
 
-To be able to access DEVR from anywhere in your filesystem, you must add it to your so-called PATH environment variable.
-Follow the instructions below for your own operating system:
+First, download the package as a ZIP or clone the repository into a place of your chosing
+Since DEVR is a CLI script that mainly affects your current working directory, you need to be able to access DEVR from 
+anywhere in your filesystem. For this, you must add it to your so-called PATH environment variable; 
+follow the instructions below for your specific operating system:
 
 
 ###Linux users###
@@ -39,9 +41,9 @@ to access all the commands at your fingertips.
 
 Before anything, keep in mind that you will have to run your CMD with Administrator rights (right-click, Run as Administrator)
 
-To be able to access DEVR from anywhere in your filestructure, download the package, add it to a directory of your choice,
-and then add that directory's path to your 'path' environment variable. If you are unfamiliar with changing this variable,
-see [this tutorial](http://www.computerhope.com/issues/ch000549.htm#0).
+To be able to access DEVR from anywhere in your filestructure, download the package or clone it, and place the contents in 
+a directory of your choice, and then add that directory's path to your 'path' environment variable. 
+If you are unfamiliar with changing this variable, see [this tutorial](http://www.computerhope.com/issues/ch000549.htm#0).
 
 After changing the variable, don't forget to close and re-open your CMD if it was still open before, since the variable
 will not be applied until your CMD has restarted.
@@ -51,4 +53,5 @@ So, start up your CMD again, and you should be able to run the following command
 ``c:\Users\Cas>devr``
 
 
-Next, you can configure DEVR further using the related commands, for this, see [the Configuration doc](2-Configuration.md)
+###What's next?###
+Now you can configure DEVR further using the appropriate commands, for this, see [the Configuration doc](2-Configuration.md)
