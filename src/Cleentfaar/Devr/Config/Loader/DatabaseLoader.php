@@ -82,7 +82,7 @@ class DatabaseLoader
             $stmt = $connection->query($query);
             $stmt->execute();
             $rows = $stmt->fetchAll();
-            foreach ($rows as $i => $row) {
+            foreach ($rows as $row) {
                 $this->data[$row['key']] = $row['value'];
             }
         }

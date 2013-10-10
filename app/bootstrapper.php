@@ -10,13 +10,15 @@
  * Used for safely referencing the root directory of the DEVR installation
  */
 define("DEVR_ROOT_DIR", __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
+define("DEVR_VENDOR_DIR", DEVR_ROOT_DIR . "vendor" . DIRECTORY_SEPARATOR);
+define("DEVR_CACHE_DIR", DEVR_ROOT_DIR . 'app' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR);
 
 /**
  * Here is a simple check to see if dependencies have been installed, and to stop if not
  */
-$autoloadPath = DEVR_ROOT_DIR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php";
+$autoloadPath = DEVR_VENDOR_DIR . "autoload.php";
 if (!file_exists($autoloadPath)) {
-    die("DEVR must be installed first, use composer to install the composer.json found in ".dirname(__DIR__));
+    die("DEVR must be installed first, use composer to install the composer.json found in " . dirname(__DIR__));
 }
 
 /**
