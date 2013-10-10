@@ -168,7 +168,7 @@ class DatabaseLoader
             $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('composer.download_url',:value)");
             $stmt->execute(array('value' => 'http://getcomposer.org/composer.phar'));
             if (defined("DEVR_TEST_MODE")) {
-                $this->insertTestConfiguration($connection);
+                $this->insertTestingConfiguration($connection);
             }
             return true;
         }
@@ -179,12 +179,19 @@ class DatabaseLoader
      * @param \PDO $connection
      * @return bool
      */
-    private function insertTestConfiguration(\PDO $connection)
+    private function insertTestingConfiguration(\PDO $connection)
     {
+        $skeletonDir = DEVR_CACHE_DIR . '/tests/project_skeleton';
+        $clientsDir = DEVR_CACHE_DIR . '/tests/clients';
+
+        $filesystem = new Filesystem();
+        $filesystem->mkdir($skeletonDir);
+        $filesystem->mkdir($clientsDir);
+
         $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.skeleton_dir', :value)");
-        $stmt->execute(array('value' => DEVR_CACHE_DIR . '/tests/project_skeleton'));
+        $stmt->execute(array('value' => $skeletonDir));
         $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.clients_dir',:value)");
-        $stmt->execute(array('value' => DEVR_CACHE_DIR . '/tests/clients'));
+        $stmt->execute(array('value' => $clientsDir));
         return true;
     }
 }

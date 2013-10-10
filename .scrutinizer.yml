@@ -6,6 +6,7 @@ before_commands:
 tools:
     php_mess_detector:
         config:
+            # Satisfy the longer execute()-methods for commands, which tend to decrease readability
             code_size_rules: { excessive_method_length: false, too_many_methods: false }
     php_code_sniffer:
         config:
