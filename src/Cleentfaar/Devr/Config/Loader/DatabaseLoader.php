@@ -182,9 +182,9 @@ class DatabaseLoader
     private function insertTestConfiguration(\PDO $connection)
     {
         $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.skeleton_dir', :value)");
-        $stmt->execute(array('value' => getcwd() . '/project_skeleton'));
+        $stmt->execute(array('value' => DEVR_CACHE_DIR . '/tests/project_skeleton'));
         $stmt = $connection->prepare("INSERT INTO `configuration` (`key`,`value`) VALUES ('projects.clients_dir',:value)");
-        $stmt->execute(array('value' => getcwd() . '/clients'));
+        $stmt->execute(array('value' => DEVR_CACHE_DIR . '/tests/clients'));
         return true;
     }
 }
