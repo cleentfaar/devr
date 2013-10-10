@@ -1,6 +1,8 @@
 # DEVR ignores
 app/db/*
 !app/db/.gitkeep
+app/cache/*
+!app/cache/.gitkeep
 
 # IDE ignores
 .idea
