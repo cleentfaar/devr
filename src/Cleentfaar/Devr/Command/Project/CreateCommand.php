@@ -25,6 +25,16 @@ class CreateCommand extends Command
 {
 
     /**
+     * @var \Symfony\Component\Filesystem\Filesystem
+     */
+    private $filesystem;
+
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        $this->filesystem = new Filesystem();
+    }
+
+    /**
      * @see \Symfony\Component\Console\Command\Command::configure()
      */
     protected function configure()
@@ -150,7 +160,7 @@ class CreateCommand extends Command
     private function createProjectDir(InputInterface $input, OutputInterface $output, $client, $project, $dryRun = true)
     {
         $projectsDirectory = $this->getClientsDir();
-        if (!$this->clientDirExists($client)) {
+        if (!$this->clientExists($client)) {
             if (!$input->getOption('no-interaction')) {
                 $confirm = $this->getDialog()->ask($output, '<question>The client will be added to the following directory: ' . $projectsDirectory . ', proceed?</question> ');
                 $allowedAnswers = array("", "y", "yes");
@@ -191,24 +201,22 @@ class CreateCommand extends Command
      */
     private function createProjectDirAsSimplified($projectDir, InputInterface $input, OutputInterface $output)
     {
-        $filesystem = new Filesystem();
         $output->writeln("<comment>Created project as an empty directory in $projectDir</comment>");
         if ($input->getOption('dry-run') == false) {
-            $filesystem->mkdir($projectDir);
+            $this->filesystem->mkdir($projectDir);
             chmod($projectDir, 0777);
         }
     }
 
     private function createProjectDirAsSkeleton($projectDir, InputInterface $input, OutputInterface $output)
     {
-        $filesystem = new Filesystem();
         $projectSkeletonDir = $this->getProjectSkeletonDir();
         if (!is_dir($projectSkeletonDir)) {
             throw new \RuntimeException('The skeleton directory to copy does not exist (' . $projectSkeletonDir . ')');
         }
         if ($input->getOption('dry-run') == false) {
-            $filesystem->mkdir($projectDir);
-            $filesystem->mirror($projectSkeletonDir, $projectDir);
+            $this->filesystem->mkdir($projectDir);
+            $this->filesystem->mirror($projectSkeletonDir, $projectDir);
             chmod($projectDir, 0777);
         }
         $output->writeln("<comment>Created project using skeleton in $projectDir</comment>");
@@ -260,10 +268,10 @@ class CreateCommand extends Command
      * @param unknown_type $client
      * @return boolean
      */
-    private function clientDirExists($client)
+    private function clientExists($client)
     {
         $clientDir = $this->getClientsDir() . '/' . $client;
-        return is_dir($client);
+        return $this->filesystem->exists($clientDir);
     }
 
     /**
@@ -279,22 +287,11 @@ class CreateCommand extends Command
     {
         $clientDir = $this->getClientsDir() . '/' . $client;
         if ($dryRun == false) {
-            $filesystem = new Filesystem();
-            $filesystem->mkdir($clientDir);
+            $this->filesystem->mkdir($clientDir);
             chmod($clientDir, 0777);
         }
         $output->writeln('<comment>Created client directory in ' . $clientDir . '</comment>');
         return $clientDir;
-    }
-
-    /**
-     * Returns the home directory of git (where all repositories reside)
-     *
-     * @return string
-     */
-    private function getGitHomeDir()
-    {
-        return $this->gitHomeDir;
     }
 
     /**

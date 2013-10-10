@@ -39,10 +39,14 @@ class ListCommand extends Command
         return 1;
     }
 
+    /**
+     * @param array $data
+     * @return int
+     */
     private function findLongestKeyLength(array $data)
     {
         $longestKeyLength = 0;
-        foreach ($data as $key => $value) {
+        foreach ($data as $value) {
             if (is_array($value)) {
                 $currentLength = $this->findLongestKeyLength($value);
             } else {
@@ -53,6 +57,12 @@ class ListCommand extends Command
         return $longestKeyLength;
     }
 
+    /**
+     * @param array $configuration
+     * @param int $longestKeyLength
+     * @param int $depth
+     * @return string
+     */
     private function formatConfiguration(array $configuration, $longestKeyLength = 50, $depth = 0)
     {
         $output = "";

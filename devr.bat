@@ -1,1 +1,1 @@
-php %~dp0\devr %*
+php %~dp0devr %*
