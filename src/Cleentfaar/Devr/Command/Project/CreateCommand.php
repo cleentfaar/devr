@@ -283,7 +283,7 @@ class CreateCommand extends Command
     {
         $configuration = $this->getApplication()->getConfiguration();
         if (!isset($configuration['projects.skeleton_dir'])) {
-            return $this->cancel("No clients dir is set in the configuration, use 'devgen config:set projects.skeleton_dir PATH_TO_CLIENTS_DIR_HERE' to fix this");
+            return $this->cancel("No clients dir is set in the configuration, use 'devr config:set projects.skeleton_dir PATH_TO_PROJECT_SKELETON_DIR_HERE' to fix this");
         }
         return $configuration['projects.skeleton_dir'];
     }
@@ -297,7 +297,7 @@ class CreateCommand extends Command
     {
         $configuration = $this->getApplication()->getConfiguration();
         if (!isset($configuration['projects.clients_dir'])) {
-            return $this->cancel("No clients dir is set in the configuration, use 'devgen config:set projects.clients_dir PATH_TO_CLIENTS_DIR_HERE' to fix this");
+            return $this->cancel("No clients dir is set in the configuration, use 'devr config:set projects.clients_dir PATH_TO_CLIENTS_DIR_HERE' to fix this");
         }
         return $configuration['projects.clients_dir'];
     }
@@ -311,7 +311,7 @@ class CreateCommand extends Command
     {
         $configuration = $this->getApplication()->getConfiguration();
         if (!isset($configuration['projects.default_clone_dir'])) {
-            return $this->cancel("No clone dir is set in the configuration, use 'devgen config:set projects.default_clone_dir PATH_TO_CLIENTS_DIR_HERE' to fix this");
+            return $this->cancel("No clone dir is set in the configuration, use 'devr config:set projects.default_clone_dir RELATIVE_PATH_TO_CLONE_DIR_HERE' to fix this");
         }
         return $configuration['projects.default_clone_dir'];
     }
