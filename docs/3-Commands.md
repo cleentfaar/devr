@@ -14,7 +14,8 @@ Currently, the following commands are available to you:
 ### composer:install ###
 
 Installs composer in the working directory, e.g. for easy use in a project.
-NOTE: This is not meant to be used to install DEVR itself, you will still need to do that manually (at least once)!
+
+*NOTE: This is not meant to be used to install DEVR itself, you will still need to install those dependencies that manually (at least once)!*
 ```
 Usage:
  install:composer [-a|--auto-install] [-f|--force]
