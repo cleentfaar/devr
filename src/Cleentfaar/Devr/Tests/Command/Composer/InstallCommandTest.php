@@ -25,6 +25,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $commandTester->execute(
             array(
                 '--force' => true,
+                '--auto-install' => true,
                 '--no-interaction' => true,
             )
         );

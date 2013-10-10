@@ -54,6 +54,7 @@ class Application extends BaseApplication
         $commands[] = new Command\Composer\InstallCommand();
         $commands[] = new Command\Project\CreateCommand();
         $commands[] = new Command\Git\CreateCommand();
+        $commands[] = new Command\Wordpress\InstallCommand();
 
         return $commands;
     }

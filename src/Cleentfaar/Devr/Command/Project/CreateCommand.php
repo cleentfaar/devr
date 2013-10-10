@@ -160,7 +160,9 @@ class CreateCommand extends Command
     private function createProjectDir(InputInterface $input, OutputInterface $output, $client, $project, $dryRun = true)
     {
         $projectsDirectory = $this->getClientsDir();
-        if (!$this->clientExists($client)) {
+
+        $clientDir = $this->getClientsDir() . '/' . $client;
+        if (!$this->filesystem->exists($clientDir)) {
             if (!$input->getOption('no-interaction')) {
                 $confirm = $this->getDialog()->ask($output, '<question>The client will be added to the following directory: ' . $projectsDirectory . ', proceed?</question> ');
                 $allowedAnswers = array("", "y", "yes");
@@ -219,7 +221,7 @@ class CreateCommand extends Command
             $this->filesystem->mirror($projectSkeletonDir, $projectDir);
             chmod($projectDir, 0777);
         }
-        $output->writeln("<comment>Created project using skeleton in $projectDir</comment>");
+        $output->writeln("<comment>Created project using skeleton from $projectSkeletonDir into $projectDir</comment>");
     }
 
     /**
@@ -247,12 +249,7 @@ class CreateCommand extends Command
 
 
         $command = $this->getApplication()->find('git:create');
-        $arguments = array(
-            //'--force' => true
-            'name' => $repoName,
-            '--clone-to' => $cloneDir
-        );
-        $input = new ArrayInput($arguments);
+        $input = new ArrayInput(array('command' => 'git:create', 'name'=>$repoName, '--clone-to'=>$cloneDir));
         $returnCode = $command->run($input, $output);
 
         if ($returnCode == 0) {
@@ -260,18 +257,6 @@ class CreateCommand extends Command
         }
         $output->writeln('<comment>Repository was successfully created for this project</comment>');
         return true;
-    }
-
-    /**
-     * Checks if the given client directory exists
-     *
-     * @param unknown_type $client
-     * @return boolean
-     */
-    private function clientExists($client)
-    {
-        $clientDir = $this->getClientsDir() . '/' . $client;
-        return $this->filesystem->exists($clientDir);
     }
 
     /**
@@ -303,7 +288,7 @@ class CreateCommand extends Command
     {
         $configuration = $this->getApplication()->getConfiguration();
         if (!isset($configuration['projects.skeleton_dir'])) {
-            return $this->cancel("No clients dir is set in the configuration, use 'devr config:set projects.skeleton_dir PATH_TO_PROJECT_SKELETON_DIR_HERE' to fix this");
+            return $this->cancel("No skeleton dir is set in the configuration, use 'devr config:set projects.skeleton_dir PATH_TO_PROJECT_SKELETON_DIR_HERE' to fix this");
         }
         return $configuration['projects.skeleton_dir'];
     }

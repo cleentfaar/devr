@@ -12,3 +12,6 @@ app/db/*
 vendor/
 composer.phar
 composer.lock
+
+# Testing ignores
+.scrutinizer.phar
