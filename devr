@@ -11,6 +11,16 @@ set_time_limit(0);
 require_once(__DIR__ . "/app/bootstrapper.php");
 
 use Cleentfaar\Devr\Console\Application;
+use Cleentfaar\Devr\Command;
 
 $application = new Application();
+$commands = array();
+$commands[] = new Command\Config\ListCommand();
+$commands[] = new Command\Config\GetCommand();
+$commands[] = new Command\Config\SetCommand();
+$commands[] = new Command\Composer\InstallCommand();
+$commands[] = new Command\Project\CreateCommand();
+$commands[] = new Command\Git\CreateCommand();
+$commands[] = new Command\Wordpress\InstallCommand();
+$application->addCommands($commands);
 $application->run();

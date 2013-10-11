@@ -30,6 +30,15 @@ class InstallCommand extends Command
      */
     private $filesystem;
 
+    private $supportedVersions = array(
+        'en' => array(),
+        'nl' => array(
+            '3.5.2',
+            '3.6',
+            '3.6.1',
+        ),
+    );
+
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->filesystem = new Filesystem();
@@ -48,8 +57,8 @@ class InstallCommand extends Command
             'The target directory to use for installing Wordpress'
         );
         $this->addOption(
-            'wordpress-version',
-            'wv',
+            'version',
+            'V',
             InputOption::VALUE_REQUIRED,
             'The Wordpress version to use for this installation, this overrides the value stored under the configuration\'s \'wordpress.default_version\'-key'
         );
@@ -66,6 +75,12 @@ class InstallCommand extends Command
             'Comma-separated string of plugins to additionally install for this specific instance, these are appended to the configuration\'s wordpress.default_plugins that will already be installed. Specific plugin versions can be chosen by appending a semicolon to the plugin\'s name followed by the version number, without this suffix the latest version will be selected'
         );
         $this->addOption(
+            'cache',
+            'c',
+            InputOption::VALUE_NONE,
+            'Use this option to find an existing version of a Wordpress archive in DEVR\'s cache, before trying to downloa a new one. This can be useful for recurring tasks'
+        );
+        $this->addOption(
             'force',
             'f',
             InputOption::VALUE_NONE,
@@ -79,6 +94,7 @@ class InstallCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $targetDirectory = $input->getArgument('target');
+        $output->writeln('<comment>Installing new Wordpress package into target directory: ' . $targetDirectory . '</comment>');
         $version = $input->getOption('version');
         if (!$version) {
             $version = $this->getConfiguration('wordpress.default_version');
@@ -97,17 +113,20 @@ class InstallCommand extends Command
             }
         }
 
-        $wordpressZip = $this->downloadLatestWordpressZip($version, $locale, $output);
+        $wordpressZipPath = $this->downloadLatestWordpressZip($version, $locale, $input, $output);
 
-        if ($wordpressZip === null) {
+        if ($wordpressZipPath === null) {
             return $this->cancel("Failed to download wordpress archive");
         }
-        if (!$this->extractZip($wordpressZip, $targetDirectory)) {
+        $extracted = $this->extractZip($wordpressZipPath, $targetDirectory);
+        if (!$input->getOption('cache')) {
+            $this->filesystem->remove($wordpressZipPath);
+            $output->writeln('<comment>Removed downloaded archive since the --cache option was not used</comment>');
+        }
+        if (!$extracted) {
             return $this->cancel("Failed to extract wordpress archive");
         }
-        $output->writeln('<comment>Archive was successfully extracted to target directory: '.$targetDirectory.'</comment>');
-        $this->filesystem->remove($wordpressZip->filename);
-        $output->writeln('<comment>Archive was successfully removed from temporary directory</comment>');
+        $output->writeln('<comment>The Wordpress archive was successfully extracted to target directory: ' . $targetDirectory . '</comment>');
     }
 
     /**
@@ -115,12 +134,25 @@ class InstallCommand extends Command
      * @param $targetDirectory
      * @return bool
      */
-    private function extractZip(\ZipArchive $zip, $targetDirectory)
+    private function extractZip($wordpressZipPath, $targetDirectory)
     {
+        $wordpressZip = new \ZipArchive();
+        $res = $wordpressZip->open($wordpressZipPath);
+        if ($res !== true) {
+            return $this->cancel("Failed to open wordpress archive");
+        }
         $temporaryDir = DEVR_CACHE_DIR . uniqid();
-        $zip->extractTo($targetDirectory);
-        $zip->close();
-        $this->filesystem->rename($temporaryDir . DIRECTORY_SEPARATOR . 'wordpress', $targetDirectory);
+        $temporarySubDir = $temporaryDir . DIRECTORY_SEPARATOR . 'wordpress';
+        $wordpressZip->extractTo($temporaryDir);
+        $wordpressZip->close();
+        if (strtolower(substr(PHP_OS, 0, 3)) == 'win') {
+            /**
+             * Windows seems to have a nasty delay in it's file locking that can cause the following rename to fail
+             */
+            sleep(2);
+        }
+        $this->filesystem->rename($temporarySubDir, $targetDirectory);
+        $this->filesystem->remove($temporaryDir);
         return true;
     }
 
@@ -133,10 +165,9 @@ class InstallCommand extends Command
     {
         switch ($locale) {
             case 'nl':
-                return 'http://nl.wordpress.org/wordpress-'.$version.'-nl_NL.zip';
-            default:
-                return 'http://wordpress.org/wordpress-'.$version.'.zip';
-                break;
+                return 'http://nl.wordpress.org/wordpress-' . $version . '-nl_NL.zip';
+            case 'en':
+                return 'http://wordpress.org/wordpress-' . $version . '.zip';
         }
     }
 
@@ -146,29 +177,23 @@ class InstallCommand extends Command
      * @param OutputInterface $output
      * @return null|\ZipArchive
      */
-    private function downloadLatestWordpressZip($version, $locale = 'en', OutputInterface $output)
+    private function downloadLatestWordpressZip($version, $locale = 'en', InputInterface $input, OutputInterface $output)
     {
+        if (!empty($this->supportedVersions[$locale]) && !in_array($version, $this->supportedVersions[$locale])) {
+            return $this->cancel("The given version ($version) is not available for download with this locale ($locale)");
+        }
         $wordpressZipUrl = $this->getWordpressZipUrl($version, $locale);
         $destination = DEVR_CACHE_DIR . basename($wordpressZipUrl);
-        if ($this->filesystem->exists($destination)) {
-            $zip = new \ZipArchive();
-            $res = $zip->open($destination);
-            if ($res !== true) {
-                return null;
-            }
-            return $zip;
+        if ($input->getOption('cache') && $this->filesystem->exists($destination)) {
+            $output->writeln('<comment>Re-using a previously downloaded archive since the --cache option was used</comment>');
+            return $destination;
         }
         $output->writeln('<comment>Downloading wordpress from ' . $wordpressZipUrl . ' to ' . $destination . '</comment>');
         $browser = new Browser();
         $response = $browser->get($wordpressZipUrl);
         if (file_put_contents($destination, $response->getContent()) > 0) {
             $output->writeln('<comment>Archive was successfully downloaded</comment>');
-            $zip = new \ZipArchive();
-            $res = $zip->open($destination);
-            if ($res !== true) {
-                return null;
-            }
-            return $zip;
+            return $destination;
         }
         return null;
     }

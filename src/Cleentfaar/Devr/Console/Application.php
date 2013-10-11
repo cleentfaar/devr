@@ -10,6 +10,9 @@ namespace Cleentfaar\Devr\Console;
 use Cleentfaar\Devr\Command;
 use Cleentfaar\Devr\Config\Loader\DatabaseLoader;
 use Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class Application
@@ -42,23 +45,29 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return array|\Symfony\Component\Console\Command\Command[]
+     * Gets the default input definition.
+     *
+     * @return InputDefinition An InputDefinition instance
      */
-    public function getDefaultCommands()
+    protected function getDefaultInputDefinition()
     {
-        $commands = parent::getDefaultCommands();
+        return new InputDefinition(array(
+            new InputArgument('command', InputArgument::REQUIRED, 'The command to execute'),
 
-        $commands[] = new Command\Config\ListCommand();
-        $commands[] = new Command\Config\GetCommand();
-        $commands[] = new Command\Config\SetCommand();
-        $commands[] = new Command\Composer\InstallCommand();
-        $commands[] = new Command\Project\CreateCommand();
-        $commands[] = new Command\Git\CreateCommand();
-        $commands[] = new Command\Wordpress\InstallCommand();
-
-        return $commands;
+            new InputOption('--help', '-h', InputOption::VALUE_NONE, 'Display this help message.'),
+            new InputOption('--quiet', '-q', InputOption::VALUE_NONE, 'Do not output any message.'),
+            new InputOption('--verbose', '-v|vv|vvv', InputOption::VALUE_OPTIONAL, 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'),
+            //new InputOption('--version',        '-V', InputOption::VALUE_NONE, 'Display this application version.'),
+            new InputOption('--ansi', '', InputOption::VALUE_NONE, 'Force ANSI output.'),
+            new InputOption('--no-ansi', '', InputOption::VALUE_NONE, 'Disable ANSI output.'),
+            new InputOption('--no-interaction', '-n', InputOption::VALUE_NONE, 'Do not ask any interactive question.'),
+        ));
     }
 
+    /**
+     * @param array $configuration
+     * @return bool
+     */
     public function saveConfiguration(array $configuration = null)
     {
         if ($configuration === null) {
@@ -67,6 +76,9 @@ class Application extends BaseApplication
         return $this->configurationLoader->save($configuration);
     }
 
+    /**
+     * @return array
+     */
     public function getConfiguration()
     {
         return $this->configurationLoader->getAll();

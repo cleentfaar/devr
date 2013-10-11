@@ -249,7 +249,7 @@ class CreateCommand extends Command
 
 
         $command = $this->getApplication()->find('git:create');
-        $input = new ArrayInput(array('command' => 'git:create', 'name'=>$repoName, '--clone-to'=>$cloneDir));
+        $input = new ArrayInput(array('command' => 'git:create', 'name' => $repoName, '--clone-to' => $cloneDir));
         $returnCode = $command->run($input, $output);
 
         if ($returnCode == 0) {
@@ -315,9 +315,9 @@ class CreateCommand extends Command
     private function getDefaultCloneDir()
     {
         $configuration = $this->getApplication()->getConfiguration();
-        if (!isset($configuration['projects.default_clone_dir'])) {
-            return $this->cancel("No clone dir is set in the configuration, use 'devr config:set projects.default_clone_dir RELATIVE_PATH_TO_CLONE_DIR_HERE' to fix this");
+        if (!isset($configuration['projects.relative_repository_dir'])) {
+            return $this->cancel("No repository dir is set in the configuration, use 'devr config:set projects.relative_repository_dir RELATIVE_PATH_TO_REPOSITORY_DIR_HERE' to fix this");
         }
-        return $configuration['projects.default_clone_dir'];
+        return $configuration['projects.relative_repository_dir'];
     }
 }
