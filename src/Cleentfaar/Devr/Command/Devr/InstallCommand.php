@@ -101,6 +101,9 @@ class InstallCommand extends Command
 
             $wordpressLocale = $this->getDialog()->ask($output, '<question>Would you like to indicate a default locale to use for Wordpress installations? (default is \'en\')</question> ');
             $configuration['wordpress.default_locale'] = $wordpressLocale !== null ? $wordpressLocale : 'en';
+
+            $wordpressPlugins = $this->getDialog()->ask($output, '<question>Would you like to indicate some default plugins to install after each Wordpress installation? (must be space separated value)</question> ');
+            $configuration['wordpress.default_plugins'] = $wordpressPlugins !== null ? $wordpressPlugins : '';
         }
         $this->getApplication()->saveConfiguration($configuration);
     }
